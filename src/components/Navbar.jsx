@@ -30,7 +30,7 @@ export default function Navbar() {
                         <i class="fa-solid fa-message"></i><span>Messaging</span>
                     </li>
                 </Link>
-                <Link to="/home">
+                <Link to="/notification">
                     <li>
                         <i class="fa-solid fa-bell"></i><span>Notification</span>
                     </li>

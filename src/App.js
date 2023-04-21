@@ -7,6 +7,7 @@ import SearchProfile from "./components/SearchProfile";
 import Message from "./components/Message";
 import { Route, Routes } from "react-router-dom";
 import ViewProfile from "./components/ViewProfile";
+import Notidfication from "./components/Notidfication";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route exact path="/view-profile" element={<ViewProfile />} />
         <Route exact path="/search-profile" element={<SearchProfile />} />
         <Route exact path="/message" element={<Message />} />
+        <Route exact path="/notification" element={<Notidfication />} />
       </Routes>
     </>
   );

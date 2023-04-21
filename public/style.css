@@ -1722,6 +1722,67 @@ ul li {
 }
 
 
+/* Notification CSS */
+
+.notification-main{
+  flex-basis: 73%;
+}
+
+.notification-box{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.notification{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0px;
+  border-bottom: 1px solid #7e7f81;
+  margin: 0px 30px;
+}
+
+.notification:last-child{
+  border: none;
+}
+
+.notifiction-img{
+  margin-right: 20px;
+}
+
+.notifiction-img img{
+  height: 80px;
+  width: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.notification-desc{
+  font-size: 12px;
+}
+
+.notification-name{
+  font-size: 20px;
+}
+
+.notification-info{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.notification-option{
+  align-self: self-start;
+  margin-left: 10px;
+}
+
+
 /* Responsive Login */
 
 @media only screen and ( max-width :1000px) {
@@ -1852,5 +1913,21 @@ ul li {
   .profile-sidebar{
     flex-basis: 100%;
     width: 100%;
+  }
+}
+
+/* Responsive Notification */
+
+
+@media only screen and (max-width :1200px){
+  .notification-main{
+    flex-basis: 100%;
+    margin: 10px 30px;
+  }
+  .notification{
+    margin: 10px;
+  }
+  .notifiction-img{
+    margin-right: 10px;
   }
 }
