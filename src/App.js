@@ -8,12 +8,15 @@ import Message from "./components/Message";
 import { Route, Routes } from "react-router-dom";
 import ViewProfile from "./components/ViewProfile";
 import Notidfication from "./components/Notidfication";
+import Main from "./components/Main";
+import ForgetPassword from "./components/ForgetPassword";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route exact path="/" element={<Login />} />
+        <Route exact path="/" element={<Main />} />
+        <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/home" element={<Home />} />
         <Route exact path="/events" element={<Events />} />
@@ -22,6 +25,7 @@ function App() {
         <Route exact path="/search-profile" element={<SearchProfile />} />
         <Route exact path="/message" element={<Message />} />
         <Route exact path="/notification" element={<Notidfication />} />
+        <Route exact path="/forget-password" element={<ForgetPassword />} />
       </Routes>
     </>
   );

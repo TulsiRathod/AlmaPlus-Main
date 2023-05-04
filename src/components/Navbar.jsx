@@ -6,7 +6,7 @@ export default function Navbar() {
     <>
       <nav class="navbar">
         <div class="navbar-left">
-            <Link to="/home" class="logo"><img src="/images/Logo.jpg"/></Link>
+            <Link to="/" class="logo"><img src="/images/Logo.jpg"/></Link>
             <div class="search-box">
                 <i class="fa-sharp fa-solid fa-magnifying-glass" style={{color: "#787878"}}></i>
                 <input type="text" placeholder="search"/>

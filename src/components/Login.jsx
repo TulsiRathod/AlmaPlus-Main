@@ -1,7 +1,8 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
 export default function Login() {
+  const nav=useNavigate();
   return (
     <>
       <div className="wrap1">
@@ -29,12 +30,12 @@ export default function Login() {
             <div className="input-box button">
               <input type="submit" name="" value="Continue" />
             </div>
-            <div className="option">
+            <div className="option" onClick={()=>{nav('/forget-password')}}>
               <span>Forget Password ?</span>   
             </div>
-            <div className="new-account">
+            <div className="new-account" onClick={()=>{nav('/register')}}>
               Don't have an Account?
-              <span>SIGN UP</span>
+              <span>Sign Up</span>
             </div>
           </div>
         </div>
