@@ -560,14 +560,6 @@ a {
   width: 100%;
 }
 
-.back-icon {
-  position: relative;
-  font-size: 20px;
-  transform: translate(30px, -20px);
-  width: 50px;
-  display: none;
-}
-
 .right-container {
   flex-basis: 70%;
   height: 100%;
@@ -668,7 +660,6 @@ a {
 #progressbar {
   margin-bottom: 30px;
   overflow: hidden;
-  /*CSS counters to number the steps*/
   counter-reset: step;
 }
 
@@ -747,16 +738,15 @@ a {
   font-size: 16px;
   line-height: 30px;
   color: #a5a5a5;
-  padding: 15px 20px;
+  padding: 10px 20px;
   height: auto;
   border-radius: 16px;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .prise-list-merge {
   overflow-y: scroll;
-  height: 400px;
 }
 
 .prise-list-merge::-webkit-scrollbar {
@@ -774,7 +764,7 @@ ul.prise-list-merge li {
   color: #414141;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -793,7 +783,6 @@ ul.prise-list-merge li:hover {
   margin: 0;
   list-style: none;
   padding: 7px;
-  max-height: inherit;
   background-color: #fff;
   box-shadow: 0px 5px 8px rgb(0 0 0 / 15%);
   border-radius: 10px;
@@ -826,8 +815,8 @@ span.prise-data {
 }
 
 ul.prise-list-merge li.prise_list.selected {
-  background: #fcf5c7 !important;
-  color: #8c7c08 !important;
+  background: #81d7b9 !important;
+  color: #204538 !important;
 }
 
 .prise_main_drop ul.prise-list-merge.opened {
@@ -839,12 +828,19 @@ ul.prise-list-merge li.prise_list.selected {
   height: 50px;
   border-radius: 8px;
   object-fit: cover;
+  margin-right: 10px;
+}
+
+.text-danger{
+  color: red;
+  font-size: 12px;
+  margin: -10px 0 10px;
 }
 
 /* ****************** Home Page ************************* */
 
 .home-container {
-  padding: 20px 6%;
+  padding: 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -859,7 +855,7 @@ ul.prise-list-merge li.prise_list.selected {
 }
 
 .home-post-main {
-  flex-basis: 50%;
+  flex-basis: 45%;
 }
 
 .home-events-main {
@@ -2039,13 +2035,8 @@ ul li {
   background-color: #bbd8ce;
 }
 
-.div5-left {
-  
-}
-
 .div5-right {
   display: inline;
-  margin-left: 80px;
 }
 
 .div5 #btn-job {
@@ -2061,52 +2052,6 @@ ul li {
 #btn-job:hover {
   color: white;
   background-color: #66bd9e;
-}
-
-.div7 {
-  display: flex;
-  padding: 20px;
-  align-items: center;
-  justify-items: center;
-  justify-content: space-evenly;
-}
-
-.div7-left{
-  margin: 30px;
-}
-
-.div7-left img{
-  height: 100%;
-  width: 100%;
-}
-
-.div7-right{
-  display: flex;
-  flex-direction: column;
-}
-
-.div7 .div7-right p {
-  font-size: 17px;
-  margin: 10px;
-  padding: 10px;
-}
-
-.div7-right button {
-  font-size: 18px;
-  width: 250px;
-  text-decoration: none;
-  display: inline-block;
-  margin: 0 10px;
-  color: #66bd9e;
-  padding: 12px 0;
-  border-radius: 16px;
-  border: 2px solid #66bd9e;
-}
-
-.div7-right button:hover {
-  color: white;
-  background: #66bd9e;
-  border-color: whitesmoke;
 }
 
 /* Footer */
@@ -2238,14 +2183,11 @@ ul li {
     flex-basis: 100%;
     margin: 40px 0;
   }
-  .back-icon {
-    display: block;
-  }
 }
 
 /* Responsive Home Page */
 
-@media only screen and (max-width: 1550px) {
+@media only screen and (max-width: 1400px) {
   .profile-card-main {
     flex-basis: 25%;
   }
@@ -2356,6 +2298,10 @@ ul li {
 /* Responsive Main */
 
 @media only screen and (max-width: 1200px) {
+  .banner-nav ul li{
+    font-size: medium;
+    padding: 10px;
+  }
   .banner-main{
     grid-template-columns: 1fr;
   }
@@ -2376,15 +2322,9 @@ ul li {
   .div5-left{
     margin-bottom: 20px;
   }
-  .div7{
-    flex-direction: column;
-  }
-  .div7-right{
-    align-items: center;
-    justify-content: center;
-  }
-  .div7-right button{
-    margin-top: 20px;
+  .div5-right{
+  display: flex;
+  flex-direction: column;
   }
   .footer-main {
     display: none;

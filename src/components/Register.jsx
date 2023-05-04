@@ -5,18 +5,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
-  const [universityShow,setUniversityShow]=useState(false);
-  const [university,setUniversity]=useState([]);
-  const nav = useNavigate();
+  const [universityShow, setUniversityShow] = useState(false);
+  const [university, setUniversity] = useState([]);
   const [step, setStep] = useState(1);
-  const increaseStep = () => {
-    setStep(step + 1);
-  };
-  const decraseStep = () => {
-    setStep(step - 1);
-  };
+  const [errors, setErrors] = useState({});
+  const nav = useNavigate();
 
   const [user, setUser] = useState({
     fname: "",
@@ -25,7 +21,7 @@ export default function Register() {
     nationality: "",
     dob: "",
     address: "",
-    profilepic: [],
+    profilepic: "",
     phone: "",
     email: "",
     password: "",
@@ -44,74 +40,179 @@ export default function Register() {
     role: "",
   });
 
+  const increaseStep = () => {
+    setStep(step + 1);
+  };
+  const decraseStep = () => {
+    setStep(step - 1);
+  };
+
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = () => {
-      var body = new FormData();
-      body.append("fname",user.fname);
-      body.append("lname",user.lname);
-      body.append("gender",user.gender);
-      body.append("nationality",user.nationality);
-      body.append("dob",user.dob);
-      body.append("address",user.address);
-      body.append("profilepic",user.profilepic);
-      body.append("phone",user.phone);
-      body.append("email",user.email);
-      body.append("password",user.password);
-      body.append("languages",user.languages);
-      body.append("github",user.github);
-      body.append("linkedin",user.linkedin);
-      body.append("portfolioweb",user.portfolioweb);
-      body.append("institute",user.institute);
-      body.append("yearofjoining",user.yearofjoining);
-      body.append("course",user.course);
-      body.append("skills",user.skills);
-      body.append("companyname",user.companyname);
-      body.append("designation",user.designation);
-      body.append("experience",user.experience);
-      body.append("role",user.role);
-      const myurl=`${WEB_URL}/api/registerUser`;
+  const validate = () => {
+    let input = user;
+
+    let errors = {};
+    let isValid = true;
+
+    if (!input["fname"]) {
+      isValid = false;
+      errors["fname_err"] = "Please Enter First Name";
+    }
+    if (!input["lname"]) {
+      isValid = false;
+      errors["lname_err"] = "Please Enter Last Name";
+    }
+    if (!input["gender"]) {
+      isValid = false;
+      errors["gender_err"] = "Please Choose Gender";
+    }
+    if (!input["dob"]) {
+      isValid = false;
+      errors["dob_err"] = "Please Choose Date of Birth";
+    }
+    if (!input["address"]) {
+      isValid = false;
+      errors["add_err"] = "Please Enter Address";
+    }
+    if (!input["phone"]) {
+      isValid = false;
+      errors["phone_err"] = "Please Enter Phone Number";
+    }
+    if (!input["nationality"]) {
+      isValid = false;
+      errors["nationality_err"] = "Please Enter Nationality";
+    }
+    if (!input["languages"]) {
+      isValid = false;
+      errors["languages_err"] = "Please Choose Language";
+    }
+    if (!input["skills"]) {
+      isValid = false;
+      errors["skills_err"] = "Please Enter Skills";
+    }
+    if (!input["profilepic"]) {
+      isValid = false;
+      errors["profilepic_err"] = "Please Choose Profile Picture";
+    }
+    if (!input["institute"]) {
+      isValid = false;
+      errors["institute_err"] = "Please Choose Institute";
+    }
+    if (!input["course"]) {
+      isValid = false;
+      errors["course_err"] = "Please Choose Course";
+    }
+    if (!input["yearofjoining"]) {
+      isValid = false;
+      errors["yearofjoining_err"] = "Please Enter Year of Joining";
+    }
+    if (!input["designation"]) {
+      isValid = false;
+      errors["designation_err"] = "Please Enter Designation";
+    }
+    if (!input["email"]) {
+      isValid = false;
+      errors["email_err"] = "Please Enter Email";
+    }
+    if (!input["password"]) {
+      isValid = false;
+      errors["password_err"] = "Please Enter Password";
+    }
+    
+    if(input["password"].length<8){
+      isValid = false;
+      errors["password_err"] = "Password must be at least 8 characters long";
+    }
+    if (input["cpassword"]!==input["password"]) {
+      isValid = false;
+      errors["cpassword_err"] = "Password not match";
+    }
+    setErrors(errors);
+    return isValid;
+  };
+
+  const handleSubmit = () => {
+    if (validate()) {
+      var body = {
+        fname: user.fname,
+        lname: user.lname,
+        gender: user.gender,
+        nationality: user.nationality,
+        dob: user.dob,
+        address: user.address,
+        profilepic: user.profilepic,
+        phone: user.phone,
+        email: user.email,
+        password: user.password,
+        languages: user.languages,
+        github: user.github,
+        linkedin: user.linkedin,
+        portfolioweb: user.portfolioweb,
+        institute: user.institute,
+        yearofjoining: user.yearofjoining,
+        course: user.course,
+        skills: user.skills,
+        companyname: user.companyname,
+        designation: user.designation,
+        experience: user.experience,
+        role: user.role,
+      };
+      const myurl = `${WEB_URL}/api/register`;
       axios({
         method: "post",
         url: myurl,
-        headers: { 'Content-Type': 'multipart/form-data' },
         data: body,
       })
         .then((res) => {
-          console.log(res);
-
+          toast.success("Register Successful");
+          setTimeout(()=>{
+            nav("/login");
+          },1000)
         })
         .catch((err) => {
-          console.log("err", err.response.data.message);
+          toast.error(err.response.data.msg);
         });
+    }
+    else{
+      toast.error("Some Fields Missing!!")
+    }
   };
 
   const handleImgChange = (e) => {
-    setUser({ ...user, profilepic: e.target.files[0] });
+    var body = new FormData();
+    body.append("profilepic", e.target.files[0]);
+    axios({
+      method: "post",
+      headers: { "Content-Type": "multipart/form-data" },
+      url: `${WEB_URL}/api/uploadUserImage`,
+      data: body,
+    })
+      .then((response) => {
+        console.log(response.data.data.url);
+        setUser({ ...user, profilepic: response.data.data.url });
+      })
+      .catch((error) => {});
   };
 
   const getUniversity = () => {
     axios({
       method: "get",
       url: `${WEB_URL}/api/getInstitutes`,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        setUniversity(response.data.data);
-      })
-      .catch((error) => {
-        
-      });
+    }).then((response) => {
+      setUniversity(response.data.data);
+    });
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getUniversity();
-  },[])
+  }, []);
 
   return (
     <>
+      <ToastContainer />
       <Navbar />
       <div className="form-fields-container">
         <div className="left-container">
@@ -132,9 +233,6 @@ const handleSubmit = () => {
           <img src="./images/Usability testing-bro.png" alt="" />
         </div>
         <div className="right-container">
-          <div className="back-icon">
-            <i className="fa-solid fa-arrow-left"></i>
-          </div>
           <div className="row">
             <div className="col-md-6 col-md-offset-3">
               <form id="msform">
@@ -169,7 +267,7 @@ const handleSubmit = () => {
                       setStep(4);
                     }}
                   >
-                    Institute/Company Details
+                    Institute Details
                   </li>
                   <li
                     className={step >= 5 ? "active" : ""}
@@ -194,6 +292,7 @@ const handleSubmit = () => {
                       value={user.fname}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.fname_err}</div>
                     <input
                       type="text"
                       name="lname"
@@ -201,8 +300,9 @@ const handleSubmit = () => {
                       value={user.lname}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.lname_err}</div>
                     <div className="gender">
-                      <div>Gender :</div>
+                      <div>Gender</div>
                       <div>
                         <input
                           type="radio"
@@ -228,6 +328,7 @@ const handleSubmit = () => {
                         <span>Female</span>
                       </div>
                     </div>
+                    <div className="text-danger">{errors.gender_err}</div>
                     <input
                       type="date"
                       name="dob"
@@ -235,6 +336,7 @@ const handleSubmit = () => {
                       value={user.dob}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.dob_err}</div>
                     <input
                       type="text"
                       name="address"
@@ -242,6 +344,7 @@ const handleSubmit = () => {
                       value={user.address}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.add_err}</div>
                     <input
                       type="text"
                       name="phone"
@@ -249,6 +352,7 @@ const handleSubmit = () => {
                       value={user.phone}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.phone_err}</div>
                     <input
                       type="button"
                       name="next"
@@ -318,6 +422,7 @@ const handleSubmit = () => {
                       value={user.nationality}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.nationality_err}</div>
                     <select
                       name="languages"
                       id=""
@@ -327,22 +432,46 @@ const handleSubmit = () => {
                       <option value="" disabled selected>
                         - Language -
                       </option>
-                      <option value="hindi">Hindi</option>
-                      <option value="english">Endlish</option>
-                      <option value="gujrati">Gujrati</option>
+                      <option value="Hindi">Hindi</option>
+                      <option value="English">Endlish</option>
+                      <option value="Gujrati">Gujrati</option>
+                      <option value="Spanish">Spanish</option>
+                      <option value="Freanch">French</option>
+                      <option value="Chinese">Chinese</option>
+                      <option value="Arabic">Arabic</option>
+                      <option value="Russian">Russian</option>
+                      <option value="German">German</option>
+                      <option value="Portuguese">Portuguese</option>
+                      <option value="Japanese">Japanese</option>
                     </select>
+                    <div className="text-danger">{errors.languages_err}</div>
                     <input
                       name="skills"
                       placeholder="Skills"
                       value={user.skills}
                       onChange={handleChange}
                     ></input>
+                    <div className="text-danger">{errors.skills_err}</div>
                     <input
                       type="file"
                       name="profilepic"
                       placeholder="Select your profile picture"
                       onChange={handleImgChange}
                     />
+                    <div className="text-danger">{errors.profilepic_err}</div>
+                    {user.profilepic ? (
+                      <div>
+                        <img
+                          src={`${WEB_URL}${user.profilepic}`}
+                          alt=""
+                          height={150}
+                          width={150}
+                          style={{ objectFit: "cover", borderRadius: "50%" }}
+                        />
+                      </div>
+                    ) : (
+                      ""
+                    )}
                     <input
                       type="button"
                       name="previous"
@@ -367,53 +496,51 @@ const handleSubmit = () => {
                     <h3 className="fs-subtitle">
                       Your institute and company related info
                     </h3>
-                    {/* <select
-                      name="institute"
-                      id=""
-                      value={user.institute}
-                      onChange={handleChange}
-                    >
-                      <option value="" disabled selected>
-                        - Select College -
-                      </option>
-                      <option value="VNSGU">
-                        Veer namrmad south gujrat university
-                      </option>
-                    </select> */}
                     <div
                       class="prise_main_drop"
                       onClick={() => setUniversityShow(!universityShow)}
                     >
-                      <span class="prise-data">{user.institute}</span>
-                      <span class="prise_down_icon"><i class="fa-solid fa-angle-down"></i></span>
-                      {university.length>0?
-                      <ul
-                      class={
-                        universityShow === true
-                          ? "prise-list-merge opened"
-                          : "prise-list-merge"
-                      }
-                    >
-                      {university.map((elem)=>
-                      <li
-                        class={
-                          user.institute === elem.name
-                            ? "prise_list selected"
-                            : "prise_list"
-                        }
-                        onClick={() => {
-                          setUser({...user,institute:elem.name})
-                        }}
-                      >
-                        <img
-                        src={`${WEB_URL}${elem.image}`}
-                          className="option-img"
-                          alt=""
-                        />
-                        <span>{elem.name}</span>
-                      </li>)}
-                    </ul>:""}
+                      <span class="prise-data">{user.institute?user.institute:"Select Institute"}</span>
+                      <span class="prise_down_icon">
+                        <i class="fa-solid fa-angle-down"></i>
+                      </span>
+                      {university.length > 0 ? (
+                        <ul
+                          class={
+                            universityShow === true
+                              ? "prise-list-merge opened"
+                              : "prise-list-merge"
+                          }
+                        >
+                          {university.map((elem) => (
+                            <li
+                              class={
+                                user.institute === elem.name
+                                  ? "prise_list selected"
+                                  : "prise_list"
+                              }
+                              onClick={() => {
+                                setUser({ ...user, institute: elem.name });
+                              }}
+                            >
+                              {elem.image !== "" ? (
+                                <img
+                                  src={`${WEB_URL}${elem.image}`}
+                                  className="option-img"
+                                  alt=""
+                                />
+                              ) : (
+                                ""
+                              )}
+                              <span>{elem.name}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <li>Intitutes Not Found</li>
+                      )}
                     </div>
+                    <div className="text-danger">{errors.institute_err}</div>
                     <select
                       name="course"
                       id=""
@@ -423,10 +550,44 @@ const handleSubmit = () => {
                       <option value="" disabled selected>
                         - Select Course -
                       </option>
-                      <option value="MscIT">MscIT</option>
                       <option value="BBA">BBA</option>
                       <option value="BCA">BCA</option>
+                      <option value="B.Tech">B.Tech</option>
+                      <option value="B. Sc.">BSc</option>
+                      <option value="B.Arch">B.Arch</option>
+                      <option value="B.E.">B.E.</option>
+                      <option value="MBBS">MBBS</option>
+                      <option value="BDS">BDS</option>
+                      <option value="BHMS">BHMS</option>
+                      <option value="B. Pharmacy">B. Pharmacy</option>
+                      <option value="BPT">BPT</option>
+                      <option value="BAMS">BAMS</option>
+                      <option value="BUMS">BUMS</option>
+                      <option value="Bioinformatics">Bioinformatics</option>
+                      <option value="Genetics">Genetics</option>
+                      <option value="Microbiology">Microbiology</option>
+                      <option value="Forensic Sciences">Forensic Sciences</option>
+                      <option value="Biotechnology">Biotechnology</option>
+                      <option value="Environmental Science">Environmental Science</option>
+                      <option value="Nursing">Nursing</option>
+                      <option value="Postgraduate diploma">Postgraduate diploma</option>
+                      <option value="MBA">MBA</option>
+                      <option value="M.Tech">M.Tech</option>
+                      <option value="MA / MSc Economics">MA / MSc Economics</option>
+                      <option value="MA / MSc Statistics / Mathematics">MA / MSc Statistics / Mathematics</option>
+                      <option value="MCA / MSc Computer Science">MCA / MSc Computer Science</option>
+                      <option value="Digital Marketing">Digital Marketing</option>
+                      <option value="PGD Hotel Management">PGD Hotel Management</option>
+                      <option value="PGP – Business Accounting & Taxation">PGP – Business Accounting & Taxation</option>
+                      <option value="Tally">Tally</option>
+                      <option value="M.com">M.com</option>
+                      <option value="Machine Learning">Machine Learning</option>
+                      <option value="Mobile App Development">Mobile App Development</option>
+                      <option value="Finance & Accounts">Finance & Accounts</option>
+                      <option value="Mass Communication">Mass Communication</option>
+                      <option value="Law">Law</option>                        
                     </select>
+                    <div className="text-danger">{errors.course_err}</div>
                     <input
                       type="text"
                       name="yearofjoining"
@@ -434,6 +595,7 @@ const handleSubmit = () => {
                       value={user.yearofjoining}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.yearofjoining_err}</div>
                     <input
                       type="text"
                       name="companyname"
@@ -448,6 +610,7 @@ const handleSubmit = () => {
                       value={user.designation}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.designation_err}</div>
                     <input
                       type="text"
                       name="experience"
@@ -484,6 +647,7 @@ const handleSubmit = () => {
                       value={user.email}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.email_err}</div>
                     <input
                       type="password"
                       name="password"
@@ -491,6 +655,7 @@ const handleSubmit = () => {
                       value={user.password}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.password_err}</div>
                     <input
                       type="password"
                       name="cpassword"
@@ -498,6 +663,7 @@ const handleSubmit = () => {
                       value={user.cpassword}
                       onChange={handleChange}
                     />
+                    <div className="text-danger">{errors.cpassword_err}</div>
                     <input
                       type="button"
                       name="previous"

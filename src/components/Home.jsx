@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Slider from "react-slick";
 import Navbar from "./Navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Home() {
   const settings = {
@@ -11,6 +11,12 @@ export default function Home() {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+  const nav=useNavigate();
+  useEffect(()=>{
+    if (localStorage.getItem("AlmaPlus_Id") == null) {
+      nav("/");
+   }
+   },[])
   return (
     <>
       <Navbar />
