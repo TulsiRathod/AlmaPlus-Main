@@ -93,10 +93,10 @@ export default function Register() {
       isValid = false;
       errors["skills_err"] = "Please Enter Skills";
     }
-    if (!input["profilepic"]) {
-      isValid = false;
-      errors["profilepic_err"] = "Please Choose Profile Picture";
-    }
+    // if (!input["profilepic"]) {
+    //   isValid = false;
+    //   errors["profilepic_err"] = "Please Choose Profile Picture";
+    // }
     if (!input["institute"]) {
       isValid = false;
       errors["institute_err"] = "Please Choose Institute";
