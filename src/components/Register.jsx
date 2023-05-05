@@ -89,14 +89,6 @@ export default function Register() {
       isValid = false;
       errors["languages_err"] = "Please Choose Language";
     }
-    if (!input["skills"]) {
-      isValid = false;
-      errors["skills_err"] = "Please Enter Skills";
-    }
-    // if (!input["profilepic"]) {
-    //   isValid = false;
-    //   errors["profilepic_err"] = "Please Choose Profile Picture";
-    // }
     if (!input["institute"]) {
       isValid = false;
       errors["institute_err"] = "Please Choose Institute";
@@ -121,7 +113,6 @@ export default function Register() {
       isValid = false;
       errors["password_err"] = "Please Enter Password";
     }
-    
     if(input["password"].length<8){
       isValid = false;
       errors["password_err"] = "Password must be at least 8 characters long";

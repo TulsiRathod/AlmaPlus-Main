@@ -1,17 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Navbar from './Navbar'
 
 export default function Events() {
   return (
     <>
+    <Navbar/>
       <div className="container-2">
         <div className="events-cover">
             <div className="content">
-            <Link to="/home">
-                <div>
-                    <i className="fa-solid fa-arrow-left"></i>
-                </div>
-            </Link>
                 <h1>Events</h1>
                 <b>Find The Best Event</b>
             </div>

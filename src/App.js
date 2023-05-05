@@ -10,6 +10,7 @@ import ViewProfile from "./components/ViewProfile";
 import Notidfication from "./components/Notidfication";
 import Main from "./components/Main";
 import ForgetPassword from "./components/ForgetPassword";
+import Drawer from "./components/Drawar";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route exact path="/message" element={<Message />} />
         <Route exact path="/notification" element={<Notidfication />} />
         <Route exact path="/forget-password" element={<ForgetPassword />} />
+        <Route exact path="/drower" element={<Drawer/>} />
       </Routes>
     </>
   );

@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import Navbar from "./Navbar";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { WEB_URL } from "../baseURL";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Home() {
   const settings = {
@@ -12,28 +15,104 @@ export default function Home() {
     slidesToScroll: 1,
   };
   const nav=useNavigate();
+  const [user,setUser]=useState({});
+  const [post,setPost]=useState([]);
+  const [newPost,setNewPost]=useState({
+    description:"",
+    photos:null
+  });
+
+  const uploadImg=()=>{
+    document.getElementById('myFileInput').click();
+  }
+
+  const imgChange = (e) => {
+    // var tempArr = new Array();
+    // for(var i=0;i<e.target.files.length;i++){
+    //     tempArr.push(e.target.files[i]);
+    // }
+    setNewPost({...newPost,photos:e.target.files});
+  }
+  
+
+  const getUser=()=>{
+    axios({
+      method:'get',
+      url:`${WEB_URL}/api/searchUserById/6453988d61453953bfc177e5`
+    }).then((Response)=>{
+      setUser(Response.data.data[0]);
+    }).catch((error)=>{
+      toast.error("Something Went Wrong");
+    });
+  }
+
+  const getPost = () =>{
+    axios({
+      method:'get',
+      url:`${WEB_URL}/api/getPost`
+    }).then((Response)=>{
+      setPost(Response.data.data);
+    }).catch((error)=>{
+      toast.error("Something Went Wrong");
+    });
+  }
+
+  const addPost = () =>{
+    var body=new FormData();
+    body.append("userid",localStorage.getItem("AlmaPlus_Id"));
+    body.append("description",newPost.description);
+    body.append("date",new Date());
+    body.append("photos",newPost.photos);
+    body.append("fname",user.fname);
+    body.append("lname",user.lname);
+    body.append("designation",user.designation);
+    body.append("uscompanyname",user.companyname);
+    body.append("profilepic",user.profilepic);
+    axios({
+      url:`${WEB_URL}/api/addPost`,
+      method:'post',
+      headers: {
+        "Content-type": "multipart/form-data"
+      },
+      data:body
+    }).then((Response)=>{
+      toast.success("Post Uploaded!!");
+      setNewPost({
+        description:"",
+        photos:[]
+      })
+    }).catch((error)=>{
+      toast.error("Something went wrong!!");
+    })
+  }
+
+  const handleChange=(e)=>{
+    setNewPost({...newPost,[e.target.name]:e.target.value});
+  }
+
   useEffect(()=>{
-    if (localStorage.getItem("AlmaPlus_Id") == null) {
-      nav("/");
-   }
+   getUser();
+   getPost();
    },[])
+
   return (
     <>
+    <ToastContainer/>
       <Navbar />
       <div className="home-container">
         <div className="profile-card-main">
           <div className="profile-card">
             <div className="profile-card-imgbox">
               <img
-                src="images/profile_img.jpg"
+                src={`${WEB_URL}${user.profilepic}`}
                 alt=""
                 className="profile-card-img"
               />
             </div>
 
             <div className="profile-card-info">
-              <span className="profile-card-name">Tulsi Rathod</span>
-              <span>Web Developer at Microsoft</span>
+              <span className="profile-card-name">{user.fname} {user.lname}</span>
+              <span>{user.designation} {user.companyname?`at ${user.companyname}`:''}</span>
             </div>
             <Link to="/view-profile">
               <div className="profile-card-button">
@@ -67,142 +146,73 @@ export default function Home() {
             <img src="images/profile_img.jpg" alt="" />
             <div className="new-post-content">
               <div className="new-post-text">
-                <input type="text" placeholder="Write Here" />
-                <i className="fa-regular fa-image"></i>
+                <input type="text" placeholder="Write Here" name="description" value={newPost.description} onChange={handleChange}/>
+                <input type="file" onChange={imgChange} id="myFileInput" hidden multiple={true}/>
+                <i className="fa-regular fa-image" onClick={uploadImg}></i>
               </div>
+              {/* {newPost.photos.length>0?
               <div className="selected-img">
-                <div>
-                  <img src="images/Job offers-bro.png" alt="" />
-                </div>
-                <div>
-                  <img src="images/Job offers-cuate.png" alt="" />
-                </div>
-                <div>
-                  <img src="images/Job offers-rafiki.png" alt="" />
-                </div>
+               
+                {newPost.photos.map((elem)=>
+                  <div>
+                    <img src="" alt="" />
+                  </div>
+                )}
+              
                 <div className="more-image">+</div>
               </div>
+               
+               :""} */}
             </div>
-            <button type="submit" className="new-post-btn">
+            <button type="submit" className="new-post-btn" onClick={addPost}>
               Post
             </button>
           </div>
 
           <div className="post-box">
-            <div className="post">
-              <div className="post-header">
-                <div className="post-profile">
-                  <div>
-                    <img
-                      src="images/user3.png"
-                      alt=""
-                      className="post-profile-img"
-                    />
+            {post.length>0?
+            <>
+              {post.map((elem)=>
+                <div className="post">
+                <div className="post-header">
+                  <div className="post-profile">
+                    <div>
+                      <img
+                        src={`${WEB_URL}${elem.profilepic}`}
+                        alt=""
+                        className="post-profile-img"
+                      />
+                    </div>
+                    <div className="post-info">
+                      <span className="post-name">{elem.fname} {elem.lname}</span>
+                      <span className="post-description">
+                        {elem.designation} {elem.companyname?`at ${elem.companyname}`:''}
+                      </span>
+                    </div>
                   </div>
-                  <div className="post-info">
-                    <span className="post-name">Drashti Dankhara</span>
-                    <span className="post-description">
-                      Web Developer at Microsoft
-                    </span>
+                  <div className="post-option">
+                    <i className="fa-solid fa-ellipsis-vertical"></i>
                   </div>
                 </div>
-                <div className="post-option">
-                  <i className="fa-solid fa-ellipsis-vertical"></i>
+                <div className="post-message">
+                  {elem.description}
                 </div>
-              </div>
-              <div className="post-message">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Doloremque alias nulla non id dicta vero.
-              </div>
-              <div className="post-image">
+                {elem.photos.length>0?
+                <div className="post-images">
                 <Slider {...settings}>
-                  <img src="images/Job offers-bro.png" alt="" />
-                  <img src="images/Job offers-cuate.png" alt="" />
-                  <img src="images/Job offers-rafiki.png" alt="" />
+                  {elem.photos.map((el)=>
+                  <img src={`${WEB_URL}${el}`} alt="" className="post-image"/>
+                  )}
                 </Slider>
-              </div>
-              <div className="likebar">
-                <i className="fa-regular fa-heart"></i>
-                <i className="fa-brands fa-whatsapp"></i>
-                <i className="fa-solid fa-paper-plane"></i>
-              </div>
-            </div>
-            <div className="post">
-              <div className="post-header">
-                <div className="post-profile">
-                  <div>
-                    <img
-                      src="images/user3.png"
-                      alt=""
-                      className="post-profile-img"
-                    />
-                  </div>
-                  <div className="post-info">
-                    <span className="post-name">Drashti Dankhara</span>
-                    <span className="post-description">
-                      Web Developer at Microsoft
-                    </span>
-                  </div>
-                </div>
-                <div className="post-option">
-                  <i className="fa-solid fa-ellipsis-vertical"></i>
+              </div>:""
+                }     
+                <div className="likebar">
+                  <i className="fa-regular fa-heart"></i>
+                  <i className="fa-solid fa-paper-plane"></i>
                 </div>
               </div>
-              <div className="post-image">
-                <Slider {...settings}>
-                  <img src="images/Job offers-bro.png" alt="" />
-                  <img src="images/Job offers-cuate.png" alt="" />
-                  <img src="images/Job offers-rafiki.png" alt="" />
-                </Slider>
-              </div>
-              <div className="likebar">
-                <i className="fa-regular fa-heart"></i>
-                <i className="fa-brands fa-whatsapp"></i>
-                <i className="fa-solid fa-paper-plane"></i>
-              </div>
-            </div>
-            <div className="post">
-              <div className="post-header">
-                <div className="post-profile">
-                  <div>
-                    <img
-                      src="images/user3.png"
-                      alt=""
-                      className="post-profile-img"
-                    />
-                  </div>
-                  <div className="post-info">
-                    <span className="post-name">Drashti Dankhara</span>
-                    <span className="post-description">
-                      Web Developer at Microsoft
-                    </span>
-                  </div>
-                </div>
-                <div className="post-option">
-                  <i className="fa-solid fa-ellipsis-vertical"></i>
-                </div>
-              </div>
-              <div className="post-message">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Temporibus molestias non voluptatum nesciunt id. Dolorum tempora
-                architecto rem, dignissimos placeat iusto eveniet. Libero cumque
-                nobis labore porro tempore totam, non minus asperiores dolor,
-                impedit eligendi praesentium. Vitae, recusandae, harum ipsum
-                neque alias odio ducimus nam voluptas expedita in architecto
-                voluptatibus eligendi magnam, minus quo quisquam corporis
-                cumque! Sapiente velit officiis animi eveniet fuga nemo adipisci
-                dolorem perferendis qui voluptate soluta blanditiis beatae nisi
-                eaque dicta, dolores, explicabo, magnam consectetur accusantium
-                distinctio voluptatem maxime earum. Qui reiciendis nihil aliquid
-                modi veniam at mollitia nam molestiae tenetur earum, cum
-                aspernatur magni. Pariatur.
-              </div>
-              <div className="likebar">
-                <i className="fa-regular fa-heart"></i>
-                <i className="fa-brands fa-whatsapp"></i>
-                <i className="fa-solid fa-paper-plane"></i>
-              </div>
-            </div>
+              )}
+            </>:''}
           </div>
         </div>
 
