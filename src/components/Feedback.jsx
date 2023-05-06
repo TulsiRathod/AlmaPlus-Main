@@ -1,51 +1,42 @@
 import React from 'react'
 import Navbar from './Navbar'
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 export default function Feedback() {
+    const [feedback,setFeedback]=useState();
+    const [rate,setRate]=useState(0);
   return (
     <>
-    {/* <Navbar/> */}
+    <Navbar/>
       <div className="wrapper">
         <div className="main-container">
             <div className="l-container">
-            <Link to="/home">
-                <div className="back-arrow">
-                    <i className="fa-solid fa-arrow-left"></i>
-                </div>
-            </Link>
                 <div className="feedback-form">
-                    <div className="logo1">
-                        <img src="images/Logo.jpg" alt="logo" height="35px" width="35px"/>
-                    </div><br/>
                     <div className="rating">
-                        <h2>Rate and review</h2><br/>
-                        <span className="count-rate">Rating (4/5)</span><br/><br/>
+                        <h2>Rate and review</h2>
+                        <span className="count-rate">Rating ({rate}/5)</span>
                         <ul>
-                            <li>
-                                <i className="fa-sharp fa-solid fa-star fa-2xl"></i>
+                            <li onClick={()=>{setRate(1)}}>
+                                <i className={`fa-sharp fa-star fa-2xl ${rate>=1?'fa-solid':'fa-regular'}`}></i>
                             </li>
-                            <li>
-                                <i className="fa-sharp fa-solid fa-star fa-2xl"></i>
+                            <li onClick={()=>{setRate(2)}}>
+                                <i className={`fa-sharp fa-star fa-2xl ${rate>=2?'fa-solid':'fa-regular'}`}></i>
                             </li>
-                            <li>
-                                <i className="fa-sharp fa-solid fa-star fa-2xl"></i>
+                            <li onClick={()=>{setRate(3)}}>
+                                <i className={`fa-sharp fa-star fa-2xl ${rate>=3?'fa-solid':'fa-regular'}`}></i>
                             </li>
-                            <li>
-                                <i className="fa-sharp fa-solid fa-star fa-2xl"></i>
+                            <li onClick={()=>{setRate(4)}}>
+                                <i className={`fa-sharp fa-star fa-2xl ${rate>=4?'fa-solid':'fa-regular'}`}></i>
                             </li>
-                            <li>
-                                <i className="fa-sharp fa-regular fa-star fa-2xl"></i>
+                            <li onClick={()=>{setRate(5)}}>
+                                <i className={`fa-sharp fa-star fa-2xl ${rate>=5?'fa-solid':'fa-regular'}`}></i>
                             </li>
                         </ul>
                     </div>
                     <div className="review">
-                        <h2>Review</h2><br/>
-                        <textarea placeholder="Give Your valuable feedback here." rows="5" cols="54"
-                            id="txt-feedback" style={{resize:"none"}}></textarea>
-                    </div>
-                    <div className="btn-sec">
-                        <button type="submit" id="btn-sendfeedback">SEND</button>
+                        <h2>Review</h2>
+                        <input type='text' placeholder="Write Feedback" className="txt-feedback" multiple={true}></input>
+                        <button type="submit" className="btn-sendfeedback">SEND</button>
                     </div>
                 </div>
             </div>

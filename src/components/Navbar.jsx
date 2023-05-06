@@ -12,11 +12,15 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import axios from "axios";
+import { WEB_URL } from "../baseURL";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Navbar() {
   const [state, setState] = React.useState({
     right: false,
   });
+  const [user,setUser]=useState({});
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -26,9 +30,19 @@ export default function Navbar() {
     ) {
       return;
     }
-
     setState({ ...state, [anchor]: open });
   };
+
+  const getUser=()=>{
+    axios({
+      method:'get',
+      url:`${WEB_URL}/api/searchUserById/6453988d61453953bfc177e5`
+    }).then((Response)=>{
+      setUser(Response.data.data[0]);
+    }).catch((error)=>{
+      toast.error("Something Went Wrong");
+    });
+  }
 
   const list = (anchor) => (
     <Box
@@ -142,9 +156,12 @@ export default function Navbar() {
     if (pathname === "/register") {
       setMenus(false);
     }
+    getUser();
   }, []);
+
   return (
     <>
+    <ToastContainer/>
       <nav class="navbar">
         <div class="navbar-left">
           <Link to="/" class="logo">
@@ -199,18 +216,14 @@ export default function Navbar() {
         <div class="navbar-right">
           <div className="nav-profile">
             <img
-              src="images/profile1.png"
+              src={`${WEB_URL}${user.profilepic}`}
               class="nav-profile-img"
               onClick={() => {
                 nav("/view-profile");
               }}
             />
             <div class="user-profile">
-              <span>Me</span>
-              <i
-                class="fa-solid fa-caret-down"
-                style={{ color: "#7e7f81" }}
-              ></i>
+              <span>{user.fname} {user.lname}</span>
             </div>
           </div>
           {menus ?

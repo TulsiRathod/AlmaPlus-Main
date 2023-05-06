@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 function Main() {
     const nav=useNavigate();
+    window.scrollTo(0, 0)
   return (
     <>
        <nav class="banner-nav">

@@ -17,24 +17,19 @@ export default function Home() {
   const nav=useNavigate();
   const [user,setUser]=useState({});
   const [post,setPost]=useState([]);
-  const [newPost,setNewPost]=useState({
-    description:"",
-    photos:null
-  });
+  const [description,setDescription]=useState("");
+  const [events,setEvents]=useState([]);
+  const [fileList, setFileList] = useState(null);
+  const files = fileList ? [...fileList] : [];
 
   const uploadImg=()=>{
     document.getElementById('myFileInput').click();
   }
 
   const imgChange = (e) => {
-    // var tempArr = new Array();
-    // for(var i=0;i<e.target.files.length;i++){
-    //     tempArr.push(e.target.files[i]);
-    // }
-    setNewPost({...newPost,photos:e.target.files});
+    setFileList(e.target.files);
   }
   
-
   const getUser=()=>{
     axios({
       method:'get',
@@ -60,9 +55,11 @@ export default function Home() {
   const addPost = () =>{
     var body=new FormData();
     body.append("userid",localStorage.getItem("AlmaPlus_Id"));
-    body.append("description",newPost.description);
+    body.append("description",description);
     body.append("date",new Date());
-    body.append("photos",newPost.photos);
+    files.forEach((file, i) => {
+      body.append(`photos`, file, file.name);
+    });
     body.append("fname",user.fname);
     body.append("lname",user.lname);
     body.append("designation",user.designation);
@@ -77,22 +74,35 @@ export default function Home() {
       data:body
     }).then((Response)=>{
       toast.success("Post Uploaded!!");
-      setNewPost({
-        description:"",
-        photos:[]
-      })
+      setFileList(null);
+      setDescription("");
+      getPost();
     }).catch((error)=>{
       toast.error("Something went wrong!!");
     })
   }
 
-  const handleChange=(e)=>{
-    setNewPost({...newPost,[e.target.name]:e.target.value});
-  }
+
+    const getEvents=()=>{
+        axios({
+          method:'get',
+          url:`${WEB_URL}/api/getEvents`
+        }).then((Response)=>{
+          setEvents(Response.data.data);
+        }).catch((error)=>{
+          toast.error("Something Went Wrong");
+        });
+      }
+
+      const Logout=()=>{
+        localStorage.clear();
+        nav("/");
+      }
 
   useEffect(()=>{
    getUser();
    getPost();
+   getEvents();
    },[])
 
   return (
@@ -114,30 +124,22 @@ export default function Home() {
               <span className="profile-card-name">{user.fname} {user.lname}</span>
               <span>{user.designation} {user.companyname?`at ${user.companyname}`:''}</span>
             </div>
-            <Link to="/view-profile">
-              <div className="profile-card-button">
+              <div className="profile-card-button" onClick={()=>{nav('/view-profile');window.scrollTo(0, 0)}}>
                 <button>View Profile</button>
               </div>
-            </Link>
           </div>
 
           <div className="menu-container">
-            <Link to="/events">
-            <div className="menu">
+            <div className="menu" onClick={()=>{nav('/events')}}>
               <i className="fa-solid fa-calendar"></i>Events
             </div>
-            </Link>
-            <Link to="/feedback">
-            <div className="menu">
+            <div className="menu" onClick={()=>{nav("/feedback")}}>
               <i className="fa-solid fa-star"></i>FeedBack & Rating
             </div>
-            </Link>
             <hr className="hr-line" />
-            <Link to="/">
-            <div className="menu">
+            <div className="menu" onClick={Logout}>
               <i className="fa-solid fa-right-from-bracket"></i>Logout
             </div>
-            </Link>
           </div>
         </div>
 
@@ -146,23 +148,21 @@ export default function Home() {
             <img src="images/profile_img.jpg" alt="" />
             <div className="new-post-content">
               <div className="new-post-text">
-                <input type="text" placeholder="Write Here" name="description" value={newPost.description} onChange={handleChange}/>
+                <input type="text" placeholder="Write Here" name="description" value={description} onChange={(e)=>{setDescription(e.target.value)}}/>
                 <input type="file" onChange={imgChange} id="myFileInput" hidden multiple={true}/>
                 <i className="fa-regular fa-image" onClick={uploadImg}></i>
               </div>
-              {/* {newPost.photos.length>0?
+              {files.length>0?
               <div className="selected-img">
                
-                {newPost.photos.map((elem)=>
+                {files.map((elem)=>
                   <div>
-                    <img src="" alt="" />
+                    <img src={window.URL.createObjectURL(elem)} alt="" />
                   </div>
                 )}
-              
-                <div className="more-image">+</div>
               </div>
                
-               :""} */}
+               :""}
             </div>
             <button type="submit" className="new-post-btn" onClick={addPost}>
               Post
@@ -207,8 +207,7 @@ export default function Home() {
               </div>:""
                 }     
                 <div className="likebar">
-                  <i className="fa-regular fa-heart"></i>
-                  <i className="fa-solid fa-paper-plane"></i>
+                  <i className="fa-regular fa-heart"></i><span>{elem.likes.length}</span>
                 </div>
               </div>
               )}
@@ -222,48 +221,21 @@ export default function Home() {
             <div className="div-line"></div>
             <img src="images/Events-bro.png" alt="" />
             <div className="upcoming-events">
+              {events.map((elem)=>
               <div className="upcoming-event">
-                <div className="event-img">
-                  <img src="images/Event1.jpg" alt="" />
+              <div className="event-img">
+              {elem.photos.length>0?<img src={`${WEB_URL}${elem.photos[0]}`} alt="" className="post-image"/>:<img src='images/event1.png' className="post-image"></img>}
+              </div>
+              <div className="event-info">
+                <div className="event-name">{elem.title}</div>
+                <div className="event-date">
+                  <i className="fa-solid fa-calendar-days"></i>{elem.date.split("T")[0]}
                 </div>
-                <div className="event-info">
-                  <div className="event-name">Sports Day-2022</div>
-                  <div className="event-date">
-                    <i className="fa-solid fa-calendar-days"></i>2020-09-10
-                  </div>
-                  <div className="event-time">
-                    <i className="fa-regular fa-clock"></i>08:00 AM - 11:00AM
-                  </div>
+                <div className="event-time">
+                  <i className="fa-regular fa-clock"></i>{elem.date.split("T")[1].split(".")[0]}
                 </div>
               </div>
-              <div className="upcoming-event">
-                <div className="event-img">
-                  <img src="images/Event2.jpg" alt="" />
-                </div>
-                <div className="event-info">
-                  <div className="event-name">Sports Day-2022</div>
-                  <div className="event-date">
-                    <i className="fa-solid fa-calendar-days"></i>2020-09-10
-                  </div>
-                  <div className="event-time">
-                    <i className="fa-regular fa-clock"></i>08:00 AM - 11:00AM
-                  </div>
-                </div>
-              </div>
-              <div className="upcoming-event">
-                <div className="event-img">
-                  <img src="images/event3.jpeg" alt="" />
-                </div>
-                <div className="event-info">
-                  <div className="event-name">Sports Day-2022</div>
-                  <div className="event-date">
-                    <i className="fa-solid fa-calendar-days"></i>2020-09-10
-                  </div>
-                  <div className="event-time">
-                    <i className="fa-regular fa-clock"></i>08:00 AM - 11:00AM
-                  </div>
-                </div>
-              </div>
+            </div>)}
             </div>
           </div>
         </div>

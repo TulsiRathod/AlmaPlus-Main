@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { WEB_URL } from "../baseURL";
+import { useEffect } from "react";
 
 export default function Login() {
   const nav = useNavigate();
@@ -50,6 +51,12 @@ export default function Login() {
       })
     }
   };
+
+  useEffect(()=>{
+    if(localStorage.getItem("AlmaPlus_Id")!==null){
+      nav('/home');
+    }
+  })
 
   return (
     <>
