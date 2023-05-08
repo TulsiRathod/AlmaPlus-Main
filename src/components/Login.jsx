@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import {toast} from "react-toastify";
 import { WEB_URL } from "../baseURL";
 import { useEffect } from "react";
 
@@ -47,7 +47,7 @@ export default function Login() {
           nav("/home");
         })
       }).catch((err)=>{
-        toast.error(err.response.data.msg)
+        toast.error(err.response.data.msg);
       })
     }
   };
@@ -60,7 +60,6 @@ export default function Login() {
 
   return (
     <>
-      <ToastContainer />
       <div className="wrap1">
         <div className="login-img-box">
           <img src="images/register-animate.svg" alt="" />

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import Navbar from "./Navbar";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
-import { ToastContainer, toast } from "react-toastify";
+import {toast}  from "react-toastify";
 
 export default function Home() {
   const settings = {
     dots: true,
-    infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -31,13 +30,14 @@ export default function Home() {
   }
   
   const getUser=()=>{
+    const userID=localStorage.getItem("AlmaPlus_Id");
     axios({
       method:'get',
-      url:`${WEB_URL}/api/searchUserById/6453988d61453953bfc177e5`
+      url:`${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response)=>{
       setUser(Response.data.data[0]);
     }).catch((error)=>{
-      toast.error("Something Went Wrong");
+      console.log(error);
     });
   }
 
@@ -48,7 +48,7 @@ export default function Home() {
     }).then((Response)=>{
       setPost(Response.data.data);
     }).catch((error)=>{
-      toast.error("Something Went Wrong");
+      console.log(error);
     });
   }
 
@@ -90,7 +90,7 @@ export default function Home() {
         }).then((Response)=>{
           setEvents(Response.data.data);
         }).catch((error)=>{
-          toast.error("Something Went Wrong");
+          console.log(error);
         });
       }
 
@@ -107,7 +107,6 @@ export default function Home() {
 
   return (
     <>
-    <ToastContainer/>
       <Navbar />
       <div className="home-container">
         <div className="profile-card-main">
@@ -122,7 +121,7 @@ export default function Home() {
 
             <div className="profile-card-info">
               <span className="profile-card-name">{user.fname} {user.lname}</span>
-              <span>{user.designation} {user.companyname?`at ${user.companyname}`:''}</span>
+              {/* <span>{user.designation} {user.companyname?`at ${user.companyname}`:''}</span> */}
             </div>
               <div className="profile-card-button" onClick={()=>{nav('/view-profile');window.scrollTo(0, 0)}}>
                 <button>View Profile</button>
@@ -145,7 +144,7 @@ export default function Home() {
 
         <div className="home-post-main">
           <div className="new-post-box">
-            <img src="images/profile_img.jpg" alt="" />
+            <img src={`${WEB_URL}${user.profilepic}`} style={{he}} alt="" />
             <div className="new-post-content">
               <div className="new-post-text">
                 <input type="text" placeholder="Write Here" name="description" value={description} onChange={(e)=>{setDescription(e.target.value)}}/>
@@ -178,7 +177,7 @@ export default function Home() {
                   <div className="post-profile">
                     <div>
                       <img
-                        src={`${WEB_URL}${elem.profilepic}`}
+                        src={elem.profilepic===""||user.profilepic==="undefined"||user.profilepic===null?"images/profile1.png":`${WEB_URL}${elem.profilepic}`}
                         alt=""
                         className="post-profile-img"
                       />

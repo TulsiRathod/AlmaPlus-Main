@@ -1,7 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
+import axios from "axios";
+import { WEB_URL } from "../baseURL";
+import { toast } from "react-toastify";
 
 export default function ViewProfile() {
+  const [user,setUser]=useState({});
+  const [add,setAdd]=useState();
+  const getUser=()=>{
+    const userID=localStorage.getItem("AlmaPlus_Id");
+    axios({
+      method:'get',
+      url:`${WEB_URL}/api/searchUserById/${userID}`
+    }).then((Response)=>{
+      console.log(Response.data.data[0]);
+      setUser(Response.data.data[0]);
+      setAdd(Response.data.data[0].address);
+    }).catch((error)=>{
+      toast.error("Something Went Wrong");
+    });
+  }
+
+  useEffect(()=>{
+    getUser();
+  },[])
+
   return (
     <>
     <Navbar/>
@@ -10,14 +33,13 @@ export default function ViewProfile() {
           <div className="profile-container">
             <div className="profile-cover"></div>
             <div className="profile-container-inner">
-              <img src="images/profile_img.jpg" alt="" className="profile-pic" />
-              <h1>Tulsi Rathod</h1>
+              <img src={`${WEB_URL}${user.profilepic}`} alt="" className="profile-pic" />
+              <h1>{user.fname} {user.lname}</h1>
               <b>
-                Web Developer at Microsoft | Data Scientist at DataStack and
-                Intern at Oracle
+                {user.designation} {user.companyname?`at ${user.companyname}`:""}
               </b>
               <p>
-                Surat, Gujrat &middot; <a href="#">Contact info</a>
+               Surat, Gujarat, India &middot; <a href="#">Contact info</a>
               </p>
               <div className="mutual-connection">
                 <img src="/images/profile2.jpg" alt="" />
@@ -43,9 +65,6 @@ export default function ViewProfile() {
               first page of all major search engines then you are ahead among
               your competitors.
             </p>
-            <a href="#" className="see-more-link">
-              See more...
-            </a>
           </div>
 
           <div className="profile-description">

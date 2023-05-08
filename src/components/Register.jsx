@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
@@ -20,7 +20,8 @@ export default function Register() {
     gender: "",
     nationality: "",
     dob: "",
-    address: "",
+    city: "",
+    state:"",
     profilepic: "",
     phone: "",
     email: "",
@@ -30,14 +31,9 @@ export default function Register() {
     github: "",
     linkedin: "",
     portfolioweb: "",
-    institute: "",
-    yearofjoining: "",
-    course: "",
     skills: "",
-    companyname: "",
-    designation: "",
-    experience: "",
     role: "",
+    institute:"",
   });
 
   const increaseStep = () => {
@@ -73,9 +69,13 @@ export default function Register() {
       isValid = false;
       errors["dob_err"] = "Please Choose Date of Birth";
     }
-    if (!input["address"]) {
+    if (!input["city"]) {
       isValid = false;
-      errors["add_err"] = "Please Enter Address";
+      errors["city_err"] = "Please Enter City";
+    }
+    if (!input["state"]) {
+      isValid = false;
+      errors["state_err"] = "Please Enter State";
     }
     if (!input["phone"]) {
       isValid = false;
@@ -88,22 +88,10 @@ export default function Register() {
     if (!input["languages"]) {
       isValid = false;
       errors["languages_err"] = "Please Choose Language";
-    }
+    } 
     if (!input["institute"]) {
       isValid = false;
       errors["institute_err"] = "Please Choose Institute";
-    }
-    if (!input["course"]) {
-      isValid = false;
-      errors["course_err"] = "Please Choose Course";
-    }
-    if (!input["yearofjoining"]) {
-      isValid = false;
-      errors["yearofjoining_err"] = "Please Enter Year of Joining";
-    }
-    if (!input["designation"]) {
-      isValid = false;
-      errors["designation_err"] = "Please Enter Designation";
     }
     if (!input["email"]) {
       isValid = false;
@@ -131,9 +119,10 @@ export default function Register() {
         fname: user.fname,
         lname: user.lname,
         gender: user.gender,
-        nationality: user.nationality,
         dob: user.dob,
-        address: user.address,
+        city:user.city,
+        state:user.state,
+        nation:user.nationality,
         profilepic: user.profilepic,
         phone: user.phone,
         email: user.email,
@@ -142,13 +131,8 @@ export default function Register() {
         github: user.github,
         linkedin: user.linkedin,
         portfolioweb: user.portfolioweb,
-        institute: user.institute,
-        yearofjoining: user.yearofjoining,
-        course: user.course,
         skills: user.skills,
-        companyname: user.companyname,
-        designation: user.designation,
-        experience: user.experience,
+        institute: user.institute,
         role: user.role,
       };
       const myurl = `${WEB_URL}/api/register`;
@@ -203,7 +187,6 @@ export default function Register() {
 
   return (
     <>
-      <ToastContainer />
       <Navbar />
       <div className="form-fields-container">
         <div className="left-container">
@@ -224,8 +207,6 @@ export default function Register() {
           <img src="./images/Usability testing-bro.png" alt="" />
         </div>
         <div className="right-container">
-          <div className="row">
-            <div className="col-md-6 col-md-offset-3">
               <form id="msform">
                 <ul id="progressbar">
                   <li
@@ -252,18 +233,18 @@ export default function Register() {
                   >
                     Additional Details
                   </li>
-                  <li
+                  {/* <li
                     className={step >= 4 ? "active" : ""}
                     onClick={() => {
                       setStep(4);
                     }}
                   >
                     Institute Details
-                  </li>
+                  </li> */}
                   <li
-                    className={step >= 5 ? "active" : ""}
+                    className={step >= 4 ? "active" : ""}
                     onClick={() => {
-                      setStep(5);
+                      setStep(4);
                     }}
                   >
                     Account Setup
@@ -320,30 +301,31 @@ export default function Register() {
                       </div>
                     </div>
                     <div className="text-danger">{errors.gender_err}</div>
-                    <input
+                    <div className="datefield"><span>Date of Birth</span> <input
                       type="date"
                       name="dob"
                       placeholder="Date of Birth"
                       value={user.dob}
                       onChange={handleChange}
-                    />
+                    /></div>
+                    
                     <div className="text-danger">{errors.dob_err}</div>
                     <input
                       type="text"
-                      name="address"
-                      placeholder="Address"
-                      value={user.address}
+                      name="city"
+                      placeholder="City"
+                      value={user.city}
                       onChange={handleChange}
                     />
-                    <div className="text-danger">{errors.add_err}</div>
+                    <div className="text-danger">{errors.city_err}</div>
                     <input
                       type="text"
-                      name="phone"
-                      placeholder="Phone"
-                      value={user.phone}
+                      name="state"
+                      placeholder="State"
+                      value={user.state}
                       onChange={handleChange}
                     />
-                    <div className="text-danger">{errors.phone_err}</div>
+                    <div className="text-danger">{errors.state_err}</div>
                     <input
                       type="button"
                       name="next"
@@ -406,6 +388,51 @@ export default function Register() {
                     <h3 className="fs-subtitle">
                       Tell us something more about you
                     </h3>
+                    <div
+                      class="prise_main_drop"
+                      onClick={() => setUniversityShow(!universityShow)}
+                    >
+                      <span class="prise-data">{user.institute?user.institute:"Select Institute"}</span>
+                      <span class="prise_down_icon">
+                        <i class="fa-solid fa-angle-down"></i>
+                      </span>
+                      {university.length > 0 ? (
+                        <ul
+                          class={
+                            universityShow === true
+                              ? "prise-list-merge opened"
+                              : "prise-list-merge"
+                          }
+                        >
+                          {university.map((elem) => (
+                            <li
+                              class={
+                                user.institute === elem.name
+                                  ? "prise_list selected"
+                                  : "prise_list"
+                              }
+                              onClick={() => {
+                                setUser({ ...user, institute: elem.name });
+                              }}
+                            >
+                              {elem.image !== "" ? (
+                                <img
+                                  src={`${WEB_URL}${elem.image}`}
+                                  className="option-img"
+                                  alt=""
+                                />
+                              ) : (
+                                ""
+                              )}
+                              <span>{elem.name}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <li>Intitutes Not Found</li>
+                      )}
+                    </div>
+                    <div className="text-danger">{errors.institute_err}</div>
                     <input
                       type="text"
                       name="nationality"
@@ -481,7 +508,7 @@ export default function Register() {
                 ) : (
                   ""
                 )}
-                {step === 4 ? (
+                {/* {step === 4 ? (
                   <fieldset>
                     <h2 className="fs-title">Institute/Company Details</h2>
                     <h3 className="fs-subtitle">
@@ -626,11 +653,20 @@ export default function Register() {
                   </fieldset>
                 ) : (
                   ""
-                )}
-                {step === 5 ? (
+                )} */}
+                {step === 4 ? (
                   <fieldset>
                     <h2 className="fs-title">Create your account</h2>
                     <h3 className="fs-subtitle">Fill in your credentials</h3>
+                    
+                    <input
+                      type="text"
+                      name="phone"
+                      placeholder="Phone"
+                      value={user.phone}
+                      onChange={handleChange}
+                    />
+                    <div className="text-danger">{errors.phone_err}</div>
                     <input
                       type="text"
                       name="email"
@@ -674,8 +710,6 @@ export default function Register() {
                   ""
                 )}
               </form>
-            </div>
-          </div>
         </div>
       </div>
     </>

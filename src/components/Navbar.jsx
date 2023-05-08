@@ -8,13 +8,10 @@ import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 
 export default function Navbar() {
   const [state, setState] = React.useState({
@@ -34,9 +31,10 @@ export default function Navbar() {
   };
 
   const getUser=()=>{
+    const userID=localStorage.getItem("AlmaPlus_Id");
     axios({
       method:'get',
-      url:`${WEB_URL}/api/searchUserById/6453988d61453953bfc177e5`
+      url:`${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response)=>{
       setUser(Response.data.data[0]);
     }).catch((error)=>{
@@ -161,7 +159,6 @@ export default function Navbar() {
 
   return (
     <>
-    <ToastContainer/>
       <nav class="navbar">
         <div class="navbar-left">
           <Link to="/" class="logo">
@@ -213,40 +210,42 @@ export default function Navbar() {
           ""
         )}
 
+        {menus?
         <div class="navbar-right">
-          <div className="nav-profile">
-            <img
-              src={`${WEB_URL}${user.profilepic}`}
-              class="nav-profile-img"
-              onClick={() => {
-                nav("/view-profile");
-              }}
-            />
-            <div class="user-profile">
-              <span>{user.fname} {user.lname}</span>
-            </div>
+        <div className="nav-profile">
+          <img
+            src={`${WEB_URL}${user.profilepic}`}
+            class="nav-profile-img"
+            onClick={() => {
+              nav("/view-profile");
+            }}
+          />
+          <div class="user-profile">
+            <span>{user.fname} {user.lname}</span>
           </div>
-          {menus ?
-           <div className="nav-search-bar">
-           <i class="fa-solid fa-magnifying-glass" onClick={()=>{nav('/search-profile')}}></i>
-           <React.Fragment>
-             <Button onClick={toggleDrawer("right", true)}>
-               <i class="fa-solid fa-bars"></i>
-             </Button>
-             <SwipeableDrawer
-               anchor="right"
-               open={state["right"]}
-               onClose={toggleDrawer("right", false)}
-               onOpen={toggleDrawer("right", true)}
-             >
-               {list("right")}
-             </SwipeableDrawer>
-           </React.Fragment>
-         </div>
-        :""}
-         
-          <div></div>
         </div>
+        
+         <div className="nav-search-bar">
+         <i class="fa-solid fa-magnifying-glass" onClick={()=>{nav('/search-profile')}}></i>
+         <React.Fragment>
+           <Button onClick={toggleDrawer("right", true)}>
+             <i class="fa-solid fa-bars"></i>
+           </Button>
+           <SwipeableDrawer
+             anchor="right"
+             open={state["right"]}
+             onClose={toggleDrawer("right", false)}
+             onOpen={toggleDrawer("right", true)}
+           >
+             {list("right")}
+           </SwipeableDrawer>
+         </React.Fragment>
+       </div>
+        <div>
+        </div>
+      </div>:""  
+      }
+
       </nav>
     </>
   );

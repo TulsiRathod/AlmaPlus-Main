@@ -11,10 +11,12 @@ import Notidfication from "./components/Notidfication";
 import Main from "./components/Main";
 import ForgetPassword from "./components/ForgetPassword";
 import Drawer from "./components/Drawar";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <>
+    <ToastContainer/>
       <Routes>
         <Route exact path="/" element={<Main />} />
         <Route exact path="/login" element={<Login />} />

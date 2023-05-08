@@ -21,7 +21,7 @@ function Main() {
             <h1>ALMAPLUS</h1>
             <p>A Platform for Alumni and Student to CONNECT together.</p>
             <div class="banner-btn">
-                SCHEDULE DEMO
+                Register Institute
             </div>
         </div>
         <div class="banner-right">
