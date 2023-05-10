@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { WEB_URL } from '../baseURL';
 import axios from 'axios';
 
-function ChatUser({ userid, setCurrentId, setName, setProfilepic }) {
+function ChatUser({ userid, setCurrentId, setName, setProfilepic, setReceiverId }) {
     const [user, setUser] = useState({});
     const [userId, setUserId] = useState('');
     const myid = localStorage.getItem("AlmaPlus_Id");
@@ -28,7 +28,7 @@ function ChatUser({ userid, setCurrentId, setName, setProfilepic }) {
 
     return (
         <>
-            <div className="chat-user" onClick={() => { setCurrentId(userid._id); setName(user.fname + ' ' + user.lname); setProfilepic(user.profilepic) }}>
+            <div className="chat-user" onClick={() => { setCurrentId(userid._id); setName(user.fname + ' ' + user.lname); setProfilepic(user.profilepic); setReceiverId(user._id) }}>
                 <img src={`${WEB_URL}${user.profilepic}`} alt="" />
                 <div className="chat-user-info">
                     <div>

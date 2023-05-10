@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useRevalidator } from 'react-router-dom'
 import ChatUser from './ChatUser'
 import ChatMessage from './ChatMessage'
 import axios from 'axios';
 import { WEB_URL } from '../baseURL';
+import { io } from "socket.io-client";
 
 export default function Message() {
     const userid = localStorage.getItem("AlmaPlus_Id");
@@ -14,10 +15,32 @@ export default function Message() {
     const [profilepic, setProfilepic] = useState('');
     const [user, setUser] = useState({});
     const [newMsg, setNewMsg] = useState("");
-    const scrollRef = useRef();
+    const socket = useRef(io("ws://localhost:8900"));
+    const [receiverId, setReceiverId] = useState("");
+    const [arrivalMessage, setArrivalMessage] = useState(null);
+
+    // const scrollRef = useRef();
 
     useEffect(() => {
-        // console.log("logged in user : " + userid);
+        socket.current = io("ws://localhost:8900");
+        socket.current.on("getMessage", data => {
+            setArrivalMessage({
+                sender: data.senderId,
+                text: data.text,
+                createdAt: Date.now()
+            })
+        })
+    }, []);
+
+    useEffect(() => {
+        arrivalMessage && arrivalMessage.sender === receiverId && setMessages((prev) => [...prev, arrivalMessage]);
+    }, [arrivalMessage, receiverId])
+
+    useEffect(() => {
+        socket.current.emit("addUser", userid);
+        socket.current.on("getUsers", users => {
+            console.log(users);
+        })
         getConversation();
         getUser();
     }, [userid]);
@@ -27,7 +50,7 @@ export default function Message() {
             url: `${WEB_URL}/api/getConversations/${userid}`,
             method: "get",
         }).then((response) => {
-            // console.log(response);
+            console.log(response);
             setConversationID(response.data.data);
             // console.log("conversationID :" + conversationID);
         }).catch((error) => {
@@ -70,6 +93,12 @@ export default function Message() {
 
     const sendMessage = (e) => {
         e.preventDefault();
+        socket.current.emit("sendMessage", {
+            senderId: userid,
+            receiverId: receiverId,
+            text: newMsg
+        });
+
         if (newMsg !== '') {
             axios({
                 method: 'post',
@@ -111,7 +140,7 @@ export default function Message() {
                     {conversationID.length > 0 ? <div className="chat-user-list">
                         {
                             conversationID.map((elem) =>
-                                <ChatUser userid={elem} setCurrentId={setCurrentId} setName={setName} setProfilepic={setProfilepic} />
+                                <ChatUser userid={elem} setCurrentId={setCurrentId} setName={setName} setProfilepic={setProfilepic} setReceiverId={setReceiverId} />
                             )
                         }
                     </div> : ''}
