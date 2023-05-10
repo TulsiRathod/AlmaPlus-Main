@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
-import {toast}  from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function Home() {
   const settings = {
@@ -13,97 +13,97 @@ export default function Home() {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
-  const nav=useNavigate();
-  const [user,setUser]=useState({});
-  const [post,setPost]=useState([]);
-  const [description,setDescription]=useState("");
-  const [events,setEvents]=useState([]);
+  const nav = useNavigate();
+  const [user, setUser] = useState({});
+  const [post, setPost] = useState([]);
+  const [description, setDescription] = useState("");
+  const [events, setEvents] = useState([]);
   const [fileList, setFileList] = useState(null);
   const files = fileList ? [...fileList] : [];
 
-  const uploadImg=()=>{
+  const uploadImg = () => {
     document.getElementById('myFileInput').click();
   }
 
   const imgChange = (e) => {
     setFileList(e.target.files);
   }
-  
-  const getUser=()=>{
-    const userID=localStorage.getItem("AlmaPlus_Id");
+
+  const getUser = () => {
+    const userID = localStorage.getItem("AlmaPlus_Id");
     axios({
-      method:'get',
-      url:`${WEB_URL}/api/searchUserById/${userID}`
-    }).then((Response)=>{
+      method: 'get',
+      url: `${WEB_URL}/api/searchUserById/${userID}`
+    }).then((Response) => {
       setUser(Response.data.data[0]);
-    }).catch((error)=>{
+    }).catch((error) => {
       console.log(error);
     });
   }
 
-  const getPost = () =>{
+  const getPost = () => {
     axios({
-      method:'get',
-      url:`${WEB_URL}/api/getPost`
-    }).then((Response)=>{
-      setPost(Response.data.data);
-    }).catch((error)=>{
+      method: 'get',
+      url: `${WEB_URL}/api/getPost`
+    }).then((Response) => {
+      setPost(Response.data.data.reverse());
+    }).catch((error) => {
       console.log(error);
     });
   }
 
-  const addPost = () =>{
-    var body=new FormData();
-    body.append("userid",localStorage.getItem("AlmaPlus_Id"));
-    body.append("description",description);
-    body.append("date",new Date());
+  const addPost = () => {
+    var body = new FormData();
+    body.append("userid", localStorage.getItem("AlmaPlus_Id"));
+    body.append("description", description);
+    body.append("date", new Date());
     files.forEach((file, i) => {
       body.append(`photos`, file, file.name);
     });
-    body.append("fname",user.fname);
-    body.append("lname",user.lname);
-    body.append("designation",user.designation);
-    body.append("uscompanyname",user.companyname);
-    body.append("profilepic",user.profilepic);
+    body.append("fname", user.fname);
+    body.append("lname", user.lname);
+    body.append("designation", user.designation);
+    body.append("uscompanyname", user.companyname);
+    body.append("profilepic", user.profilepic);
     axios({
-      url:`${WEB_URL}/api/addPost`,
-      method:'post',
+      url: `${WEB_URL}/api/addPost`,
+      method: 'post',
       headers: {
         "Content-type": "multipart/form-data"
       },
-      data:body
-    }).then((Response)=>{
+      data: body
+    }).then((Response) => {
       toast.success("Post Uploaded!!");
       setFileList(null);
       setDescription("");
       getPost();
-    }).catch((error)=>{
+    }).catch((error) => {
       toast.error("Something went wrong!!");
     })
   }
 
 
-    const getEvents=()=>{
-        axios({
-          method:'get',
-          url:`${WEB_URL}/api/getEvents`
-        }).then((Response)=>{
-          setEvents(Response.data.data);
-        }).catch((error)=>{
-          console.log(error);
-        });
-      }
+  const getEvents = () => {
+    axios({
+      method: 'get',
+      url: `${WEB_URL}/api/getEvents`
+    }).then((Response) => {
+      setEvents(Response.data.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
 
-      const Logout=()=>{
-        localStorage.clear();
-        nav("/");
-      }
+  const Logout = () => {
+    localStorage.clear();
+    nav("/");
+  }
 
-  useEffect(()=>{
-   getUser();
-   getPost();
-   getEvents();
-   },[])
+  useEffect(() => {
+    getUser();
+    getPost();
+    getEvents();
+  }, [])
 
   return (
     <>
@@ -123,16 +123,16 @@ export default function Home() {
               <span className="profile-card-name">{user.fname} {user.lname}</span>
               {/* <span>{user.designation} {user.companyname?`at ${user.companyname}`:''}</span> */}
             </div>
-              <div className="profile-card-button" onClick={()=>{nav('/view-profile');window.scrollTo(0, 0)}}>
-                <button>View Profile</button>
-              </div>
+            <div className="profile-card-button" onClick={() => { nav('/view-profile'); window.scrollTo(0, 0) }}>
+              <button>View Profile</button>
+            </div>
           </div>
 
           <div className="menu-container">
-            <div className="menu" onClick={()=>{nav('/events')}}>
+            <div className="menu" onClick={() => { nav('/events') }}>
               <i className="fa-solid fa-calendar"></i>Events
             </div>
-            <div className="menu" onClick={()=>{nav("/feedback")}}>
+            <div className="menu" onClick={() => { nav("/feedback") }}>
               <i className="fa-solid fa-star"></i>FeedBack & Rating
             </div>
             <hr className="hr-line" />
@@ -144,24 +144,24 @@ export default function Home() {
 
         <div className="home-post-main">
           <div className="new-post-box">
-            <img src={`${WEB_URL}${user.profilepic}`} style={{he}} alt="" />
+            <img src={`${WEB_URL}${user.profilepic}`} alt="" />
             <div className="new-post-content">
               <div className="new-post-text">
-                <input type="text" placeholder="Write Here" name="description" value={description} onChange={(e)=>{setDescription(e.target.value)}}/>
-                <input type="file" onChange={imgChange} id="myFileInput" hidden multiple={true}/>
+                <input type="text" placeholder="Write Here" name="description" value={description} onChange={(e) => { setDescription(e.target.value) }} />
+                <input type="file" onChange={imgChange} id="myFileInput" hidden multiple={true} />
                 <i className="fa-regular fa-image" onClick={uploadImg}></i>
               </div>
-              {files.length>0?
-              <div className="selected-img">
-               
-                {files.map((elem)=>
-                  <div>
-                    <img src={window.URL.createObjectURL(elem)} alt="" />
-                  </div>
-                )}
-              </div>
-               
-               :""}
+              {files.length > 0 ?
+                <div className="selected-img">
+
+                  {files.map((elem) =>
+                    <div>
+                      <img src={window.URL.createObjectURL(elem)} alt="" />
+                    </div>
+                  )}
+                </div>
+
+                : ""}
             </div>
             <button type="submit" className="new-post-btn" onClick={addPost}>
               Post
@@ -169,48 +169,48 @@ export default function Home() {
           </div>
 
           <div className="post-box">
-            {post.length>0?
-            <>
-              {post.map((elem)=>
-                <div className="post">
-                <div className="post-header">
-                  <div className="post-profile">
-                    <div>
-                      <img
-                        src={elem.profilepic===""||user.profilepic==="undefined"||user.profilepic===null?"images/profile1.png":`${WEB_URL}${elem.profilepic}`}
-                        alt=""
-                        className="post-profile-img"
-                      />
+            {post.length > 0 ?
+              <>
+                {post.map((elem) =>
+                  <div className="post">
+                    <div className="post-header">
+                      <div className="post-profile">
+                        <div>
+                          <img
+                            src={elem.profilepic === "" || user.profilepic === "undefined" || user.profilepic === null ? "images/profile1.png" : `${WEB_URL}${elem.profilepic}`}
+                            alt=""
+                            className="post-profile-img"
+                          />
+                        </div>
+                        <div className="post-info">
+                          <span className="post-name">{elem.fname} {elem.lname}</span>
+                          <span className="post-description">
+                            {elem.designation} {elem.companyname ? `at ${elem.companyname}` : ''}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="post-option">
+                        <i className="fa-solid fa-ellipsis-vertical"></i>
+                      </div>
                     </div>
-                    <div className="post-info">
-                      <span className="post-name">{elem.fname} {elem.lname}</span>
-                      <span className="post-description">
-                        {elem.designation} {elem.companyname?`at ${elem.companyname}`:''}
-                      </span>
+                    <div className="post-message">
+                      {elem.description}
+                    </div>
+                    {elem.photos.length > 0 ?
+                      <div className="post-images">
+                        <Slider {...settings}>
+                          {elem.photos.map((el) =>
+                            <img src={`${WEB_URL}${el}`} alt="" className="post-image" />
+                          )}
+                        </Slider>
+                      </div> : ""
+                    }
+                    <div className="likebar">
+                      <i className="fa-regular fa-heart"></i><span>{elem.likes.length}</span>
                     </div>
                   </div>
-                  <div className="post-option">
-                    <i className="fa-solid fa-ellipsis-vertical"></i>
-                  </div>
-                </div>
-                <div className="post-message">
-                  {elem.description}
-                </div>
-                {elem.photos.length>0?
-                <div className="post-images">
-                <Slider {...settings}>
-                  {elem.photos.map((el)=>
-                  <img src={`${WEB_URL}${el}`} alt="" className="post-image"/>
-                  )}
-                </Slider>
-              </div>:""
-                }     
-                <div className="likebar">
-                  <i className="fa-regular fa-heart"></i><span>{elem.likes.length}</span>
-                </div>
-              </div>
-              )}
-            </>:''}
+                )}
+              </> : ''}
           </div>
         </div>
 
@@ -220,21 +220,21 @@ export default function Home() {
             <div className="div-line"></div>
             <img src="images/Events-bro.png" alt="" />
             <div className="upcoming-events">
-              {events.map((elem)=>
-              <div className="upcoming-event">
-              <div className="event-img">
-              {elem.photos.length>0?<img src={`${WEB_URL}${elem.photos[0]}`} alt="" className="post-image"/>:<img src='images/event1.png' className="post-image"></img>}
-              </div>
-              <div className="event-info">
-                <div className="event-name">{elem.title}</div>
-                <div className="event-date">
-                  <i className="fa-solid fa-calendar-days"></i>{elem.date.split("T")[0]}
-                </div>
-                <div className="event-time">
-                  <i className="fa-regular fa-clock"></i>{elem.date.split("T")[1].split(".")[0]}
-                </div>
-              </div>
-            </div>)}
+              {events.map((elem) =>
+                <div className="upcoming-event">
+                  <div className="event-img">
+                    {elem.photos.length > 0 ? <img src={`${WEB_URL}${elem.photos[0]}`} alt="" className="post-image" /> : <img src='images/event1.png' className="post-image"></img>}
+                  </div>
+                  <div className="event-info">
+                    <div className="event-name">{elem.title}</div>
+                    <div className="event-date">
+                      <i className="fa-solid fa-calendar-days"></i>{elem.date.split("T")[0]}
+                    </div>
+                    <div className="event-time">
+                      <i className="fa-regular fa-clock"></i>{elem.date.split("T")[1].split(".")[0]}
+                    </div>
+                  </div>
+                </div>)}
             </div>
           </div>
         </div>

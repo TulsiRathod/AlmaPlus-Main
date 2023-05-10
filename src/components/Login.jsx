@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import { WEB_URL } from "../baseURL";
 import { useEffect } from "react";
 
@@ -39,21 +39,21 @@ export default function Login() {
           email: user.email,
           password: user.password,
         },
-        url:`${WEB_URL}/api/userLogin`
-      }).then((response)=>{
+        url: `${WEB_URL}/api/userLogin`
+      }).then((response) => {
         toast.success("Login Successfull");
-        localStorage.setItem("AlmaPlus_Id",response.data.data._id);
-        setTimeout(()=>{
+        localStorage.setItem("AlmaPlus_Id", response.data.data._id);
+        setTimeout(() => {
           nav("/home");
         })
-      }).catch((err)=>{
+      }).catch((err) => {
         toast.error(err.response.data.msg);
       })
     }
   };
 
-  useEffect(()=>{
-    if(localStorage.getItem("AlmaPlus_Id")!==null){
+  useEffect(() => {
+    if (localStorage.getItem("AlmaPlus_Id") !== null) {
       nav('/home');
     }
   })
