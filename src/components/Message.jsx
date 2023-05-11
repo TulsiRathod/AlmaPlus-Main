@@ -15,14 +15,14 @@ export default function Message() {
     const [profilepic, setProfilepic] = useState('');
     const [user, setUser] = useState({});
     const [newMsg, setNewMsg] = useState("");
-    const socket = useRef(io("ws://localhost:8900"));
+    const socket = useRef();
     const [receiverId, setReceiverId] = useState("");
     const [arrivalMessage, setArrivalMessage] = useState(null);
 
     // const scrollRef = useRef();
 
     useEffect(() => {
-        socket.current = io("ws://localhost:8900");
+        socket.current = io("http://20.106.152.112:5000");
         socket.current.on("getMessage", data => {
             setArrivalMessage({
                 sender: data.senderId,
