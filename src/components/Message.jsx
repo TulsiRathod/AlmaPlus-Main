@@ -22,7 +22,7 @@ export default function Message() {
     // const scrollRef = useRef();
 
     useEffect(() => {
-        socket.current = io("http://20.106.152.112:5000");
+        socket.current = io("ws://20.106.152.112:8900");
         socket.current.on("getMessage", data => {
             setArrivalMessage({
                 sender: data.senderId,
