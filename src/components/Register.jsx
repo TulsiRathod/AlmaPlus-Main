@@ -113,7 +113,7 @@ export default function Register() {
     return isValid;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (validate()) {
       var body = {
         fname: user.fname,
@@ -136,7 +136,7 @@ export default function Register() {
         role: user.role,
       };
       const myurl = `${WEB_URL}/api/register`;
-      axios({
+     await axios({
         method: "post",
         url: myurl,
         data: body,
@@ -156,10 +156,10 @@ export default function Register() {
     }
   };
 
-  const handleImgChange = (e) => {
+  const handleImgChange = async(e) => {
     var body = new FormData();
     body.append("profilepic", e.target.files[0]);
-    axios({
+   await axios({
       method: "post",
       headers: { "Content-Type": "multipart/form-data" },
       url: `${WEB_URL}/api/uploadUserImage`,
@@ -172,8 +172,8 @@ export default function Register() {
       .catch((error) => {});
   };
 
-  const getUniversity = () => {
-    axios({
+  const getUniversity =async () => {
+    await axios({
       method: "get",
       url: `${WEB_URL}/api/getInstitutes`,
     }).then((response) => {
@@ -470,7 +470,7 @@ export default function Register() {
                       onChange={handleChange}
                     ></input>
                     <div className="text-danger">{errors.skills_err}</div>
-                    <input
+                    {/* <input
                       type="file"
                       name="profilepic"
                       placeholder="Select your profile picture"
@@ -487,9 +487,46 @@ export default function Register() {
                           style={{ objectFit: "cover", borderRadius: "50%" }}
                         />
                       </div>
+                      
                     ) : (
                       ""
-                    )}
+                    )} */}
+
+                    <div className="profile-uload">
+                      {user.profilepic ? (
+                        <img
+                          src={user.profilepic}
+                          alt=""
+                          className="img-fluid"
+                          style={{
+                            objectFit: "cover",
+                            width: "200px",
+                            height: "200px",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: "200px",
+                            height: "200px",
+                            borderRadius: "50%",
+                            backgroundColor: "#F3F3F3",
+                          }}
+                        ></div>
+                      )}
+                      <div className="information-profile-upload">
+                        <label>
+                          {" "}
+                          <input type="file" />{" "}
+                          <img
+                            src=" images/Icon_Camera.png"
+                            alt=""
+                            className="img-fluid"
+                          />
+                        </label>
+                      </div>
+                    </div>
+
                     <input
                       type="button"
                       name="previous"

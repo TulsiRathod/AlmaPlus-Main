@@ -6,9 +6,9 @@ function ChatUser({ userid, setCurrentId, setName, setProfilepic, setReceiverId 
     const [user, setUser] = useState({});
     const [userId, setUserId] = useState('');
     const myid = localStorage.getItem("AlmaPlus_Id");
-    const getUser = () => {
+    const getUser = async() => {
         if (userId !== '') {
-            axios({
+            await axios({
                 method: 'get',
                 url: `${WEB_URL}/api/searchUserById/${userId}`
             }).then((Response) => {

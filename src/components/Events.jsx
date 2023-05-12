@@ -9,8 +9,8 @@ import { toast } from 'react-toastify';
 export default function Events() {
     const [events,setEvents]=useState([]);
 
-    const getEvents=()=>{
-        axios({
+    const getEvents=async()=>{
+      await  axios({
           method:'get',
           url:`${WEB_URL}/api/getEvents`
         }).then((Response)=>{

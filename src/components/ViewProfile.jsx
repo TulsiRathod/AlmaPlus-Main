@@ -7,9 +7,9 @@ import { toast } from "react-toastify";
 export default function ViewProfile() {
   const [user,setUser]=useState({});
   const [add,setAdd]=useState();
-  const getUser=()=>{
+  const getUser=async()=>{
     const userID=localStorage.getItem("AlmaPlus_Id");
-    axios({
+   await axios({
       method:'get',
       url:`${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response)=>{

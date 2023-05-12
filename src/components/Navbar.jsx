@@ -30,9 +30,9 @@ export default function Navbar() {
     setState({ ...state, [anchor]: open });
   };
 
-  const getUser=()=>{
+  const getUser=async()=>{
     const userID=localStorage.getItem("AlmaPlus_Id");
-    axios({
+   await axios({
       method:'get',
       url:`${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response)=>{
@@ -153,8 +153,10 @@ export default function Navbar() {
     const pathname = window.location.pathname;
     if (pathname === "/register") {
       setMenus(false);
+    }else{
+      getUser();
     }
-    getUser();
+    
   }, []);
 
   return (
