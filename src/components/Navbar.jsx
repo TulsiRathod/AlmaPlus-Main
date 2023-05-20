@@ -42,6 +42,11 @@ export default function Navbar() {
     });
   }
 
+  const Logout = () => {
+    localStorage.clear();
+    nav("/");
+  }
+
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
@@ -134,7 +139,7 @@ export default function Navbar() {
             <ListItemText primary={"Feedback"} />
           </ListItemButton>
         </ListItem>
-        <ListItem key={"logout"} disablePadding>
+        <ListItem key={"logout"} onClick={Logout} disablePadding>
           <ListItemButton>
             <i
               className="fa-solid fa-right-from-bracket"

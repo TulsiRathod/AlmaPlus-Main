@@ -23,7 +23,6 @@ function ChatUser({ userid, setCurrentId, setName, setProfilepic, setReceiverId 
     useEffect(() => {
         setUserId(userid.members.find((m) => m !== myid));
         getUser();
-        // console.log(userid);
     }, [userid]);
 
     return (
