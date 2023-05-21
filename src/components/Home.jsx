@@ -47,6 +47,7 @@ export default function Home() {
       url: `${WEB_URL}/api/getPost`
     }).then((Response) => {
       setPost(Response.data.data.reverse());
+      console.log(Response);
     }).catch((error) => {
       console.log(error);
     });
@@ -112,11 +113,7 @@ export default function Home() {
         <div className="profile-card-main">
           <div className="profile-card">
             <div className="profile-card-imgbox">
-              <img
-                src={`${WEB_URL}${user.profilepic}`}
-                alt=""
-                className="profile-card-img"
-              />
+              {user.profilepic?<img src={`${WEB_URL}${user.profilepic}`} alt=""  className="profile-card-img"/>:<img src="images/profile1.png"  className="profile-card-img"></img>}
             </div>
 
             <div className="profile-card-info">
@@ -144,7 +141,7 @@ export default function Home() {
 
         <div className="home-post-main">
           <div className="new-post-box">
-            <img src={`${WEB_URL}${user.profilepic}`} alt="" />
+            {user.profilepic?<img src={`${WEB_URL}${user.profilepic}`} alt="" />:<img src="images/profile1.png"></img>}
             <div className="new-post-content">
               <div className="new-post-text">
                 <input type="text" placeholder="Write Here" name="description" value={description} onChange={(e) => { setDescription(e.target.value) }} />
@@ -185,7 +182,7 @@ export default function Home() {
                         <div className="post-info">
                           <span className="post-name">{elem.fname} {elem.lname}</span>
                           <span className="post-description">
-                            {elem.designation} {elem.companyname ? `at ${elem.companyname}` : ''}
+                            {elem.date.split("T")[0]} {elem.date.split("T")[1].split(".")[0]}
                           </span>
                         </div>
                       </div>

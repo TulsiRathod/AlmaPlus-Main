@@ -47,15 +47,15 @@ export default function Login() {
           nav("/home");
         })
       }).catch((err) => {
-        toast.error(err.response.data.msg);
+        toast.error("Invalid Creadentials");
       })
     }
   };
 
   useEffect(() => {
-    // if (localStorage.getItem("AlmaPlus_Id") !== null) {
-    //   nav('/home');
-    // }
+    if (localStorage.getItem("AlmaPlus_Id") !== null) {
+      nav('/home');
+    }
   })
 
   return (

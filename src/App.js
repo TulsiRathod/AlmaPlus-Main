@@ -11,6 +11,7 @@ import Notidfication from "./components/Notidfication";
 import Main from "./components/Main";
 import ForgetPassword from "./components/ForgetPassword";
 import { ToastContainer } from "react-toastify";
+import NewPassword from "./components/NewPassword";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route exact path="/message" element={<Message />} />
         <Route exact path="/notification" element={<Notidfication />} />
         <Route exact path="/forget-password" element={<ForgetPassword />} />
+        <Route exact path="/new-password" element={<NewPassword />} />
       </Routes>
     </>
   );

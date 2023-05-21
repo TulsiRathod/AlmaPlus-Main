@@ -116,6 +116,7 @@ a {
 .nav-profile {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 .nav-search-bar {
@@ -1058,7 +1059,7 @@ ul.prise-list-merge li.prise_list.selected {
 
 .new-post-box img {
     height: 50px;
-    width: 70px;
+    width: 50px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -1136,6 +1137,7 @@ ul.prise-list-merge li.prise_list.selected {
 
 .post-profile {
     display: flex;
+    align-items: center;
 }
 
 .post-profile-img {
@@ -1143,7 +1145,7 @@ ul.prise-list-merge li.prise_list.selected {
     width: 50px;
     border-radius: 25px;
     object-fit: cover;
-    margin-top: 5px;
+    margin-top: 7px;
 }
 
 .post-info {
@@ -1573,7 +1575,7 @@ ul.prise-list-merge li.prise_list.selected {
     align-items: center;
     border-radius: 16px;
     width: 70%;
-    height: 80%;
+    padding: 50px 0;
 }
 
 .main-container {
@@ -2269,6 +2271,7 @@ ul li {
     color: white;
     background-color: #66BD9E;
     border: 2px solid #66BD9E;
+    margin-top: 10px;
 }
 
 #btn-reset-password:hover {
@@ -2295,6 +2298,39 @@ ul li {
     width: 100%;
 }
 
+/* Reset Password */
+
+.reset {
+    display: flex;
+    justify-content: space-evenly;
+    border-radius: 10px;
+    height: 98vh;
+}
+
+.reset-left {
+    text-align: center;
+    align-items: center;
+}
+
+.reset-left img {
+    border-radius: 10px;
+    height: 100%;
+    width: 100%;
+    padding: 50px;
+}
+
+.reset-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    width: 30%;
+}
+
+.reset-right input{
+    margin: 10px 0;
+}
 
 /* Responsive Login */
 
@@ -2527,3 +2563,29 @@ ul li {
         padding: 20px;
     }
 }
+
+/* Modal CSS */
+
+
+.modal-wrapper{
+    position:fixed;
+    left:0;
+    right: 0;
+    bottom: 0;
+    top:0;
+    background-color: rgba(189,189,189,0.9);
+  }
+  
+  .modal-container{
+    position: fixed;
+    top:50%;
+    left: 50%;
+    transform:translate(-50%,-50%) ;
+    justify-content: space-between;
+    background-color: #f3f2ef;
+    padding: 2rem 3rem;
+    border-radius: 0.5rem;
+    max-width: 30rem;
+    color: #383838;
+  }
+  

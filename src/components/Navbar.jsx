@@ -219,16 +219,12 @@ export default function Navbar() {
 
         {menus?
         <div class="navbar-right">
-        <div className="nav-profile">
-          <img
-            src={`${WEB_URL}${user.profilepic}`}
-            class="nav-profile-img"
-            onClick={() => {
+        <div className="nav-profile" onClick={() => {
               nav("/view-profile");
-            }}
-          />
+            }}>
+          {user.profilepic?<img src={`${WEB_URL}${user.profilepic}`} alt=""  class="nav-profile-img"/>:<img src="images/profile1.png"  class="nav-profile-img"></img>}
           <div class="user-profile">
-            <span>{user.fname} {user.lname}</span>
+          {user.fname?<span>{user.fname} {user.lname}</span>:<span>USER</span>}
           </div>
         </div>
         

@@ -3,10 +3,13 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
+import Modal from "./Modal";
 
 export default function ViewProfile() {
   const [user,setUser]=useState({});
   const [add,setAdd]=useState();
+  const [language,setLanguage]=useState([]);
+  const [skills,setSkills]=useState([]);
   const getUser=async()=>{
     const userID=localStorage.getItem("AlmaPlus_Id");
    await axios({
@@ -14,12 +17,16 @@ export default function ViewProfile() {
       url:`${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response)=>{
       console.log(Response.data.data[0]);
+      setLanguage(JSON.parse(Response.data.data[0].languages));
       setUser(Response.data.data[0]);
       setAdd(Response.data.data[0].address);
+      setSkills(JSON.parse(Response.data.data[0].skills));
     }).catch((error)=>{
       toast.error("Something Went Wrong");
     });
   }
+  const[showModal,setshowmodal]=useState(false);
+  const closeModal =()=>setshowmodal(false);
 
   useEffect(()=>{
     getUser();
@@ -39,33 +46,17 @@ export default function ViewProfile() {
                 {user.designation} {user.companyname?`at ${user.companyname}`:""}
               </b>
               <p>
-               Surat, Gujarat, India &middot; <a href="#">Contact info</a>
+               Surat, Gujarat, India  &middot; <a onClick={()=> setshowmodal(true)}>Contact info</a>
               </p>
-              <div className="mutual-connection">
-                <img src="/images/profile2.jpg" alt="" />
-                <span>1 mutual connection : Mansi Patel</span>
-              </div>
-              <div className="profile-btn">
-                <a href="#" className="primary-btn">
-                  <i className="fa-solid fa-plus"></i>Connect
-                </a>
-                <a href="#">
-                  <i className="fa-solid fa-lock"></i>Message
-                </a>
-              </div>
             </div>
           </div>
 
-          <div className="profile-description">
+          {user.about!==""?<div className="profile-description">
             <h2>About</h2>
             <p>
-              The Success of every website depends on search engine optimisation
-              and digital marketing strategy. if you are on first page of all
-              major search engines then you are ahead among your competitors on
-              first page of all major search engines then you are ahead among
-              your competitors.
+              {user.about}
             </p>
-          </div>
+          </div>:null}
 
           <div className="profile-description">
             <h2>Experience</h2>
@@ -142,58 +133,22 @@ export default function ViewProfile() {
             </div>
           </div>
 
-          <div className="profile-description">
+          {skills.length>0?<div className="profile-description">
             <h3>Skills</h3>
-            <a href="#" className="skills-btn">
-              Leadership
-            </a>
-            <a href="#" className="skills-btn">
-              Web Design
-            </a>
-            <a href="#" className="skills-btn">
-              Development
-            </a>
-            <a href="#" className="skills-btn">
-              UI/UX
-            </a>
-            <a href="#" className="skills-btn">
-              Communication
-            </a>
-            <a href="#" className="skills-btn">
-              Planning
-            </a>
-            <a href="#" className="skills-btn">
-              C/C++
-            </a>
-            <a href="#" className="skills-btn">
-              Python
-            </a>
-            <a href="#" className="skills-btn">
-              Javascript
-            </a>
-            <a href="#" className="skills-btn">
-              Html/css
-            </a>
-            <a href="#" className="skills-btn">
-              Java
-            </a>
-            <a href="#" className="skills-btn">
-              ASP.NET
-            </a>
-          </div>
+            {skills.map((elem)=>
+            <a className="skills-btn">
+              {elem}
+            </a>)}
+          </div>:null}
 
-          <div className="profile-description">
+          {language.length>0?<div className="profile-description">
             <h3>Language</h3>
-            <a href="#" className="language-btn">
-              English
+          {language.map((elem)=>
+            <a className="language-btn">
+              {elem}
             </a>
-            <a href="#" className="language-btn">
-              Hindi
-            </a>
-            <a href="#" className="language-btn">
-              Gujarati
-            </a>
-          </div>
+          )}
+          </div>:null}
         </div>
         <div className="profile-sidebar">
           <div className="sidebar-people">
@@ -231,6 +186,7 @@ export default function ViewProfile() {
           </div>
         </div>
       </div>
+      {showModal &&<Modal closeModal={closeModal}/>}
     </>
   );
 }

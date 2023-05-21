@@ -1,10 +1,36 @@
 import React from 'react'
 import Navbar from './Navbar'
 import { useState } from 'react'
+import axios from 'axios';
+import { WEB_URL } from '../baseURL';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export default function Feedback() {
     const [feedback,setFeedback]=useState();
     const [rate,setRate]=useState(0);
+    const nav=useNavigate();
+    const handleFeedBack=()=>{
+        const userID=localStorage.getItem("AlmaPlus_Id");
+        if(feedback!==""||rate>0){
+            axios({
+                url:`${WEB_URL}/api/addFeedback`,
+                method:'post',
+                data:{
+                    userid:userID,
+                    message:feedback,
+                    rate:rate
+                }
+            }).then((Response)=>{
+                toast.success("Feedback Submitted!!");
+                setFeedback("")
+                setRate(0);
+                nav("/home");
+            }).catch((error)=>{
+                toast.error("Something Wrong!!")
+            })
+        }
+    }
   return (
     <>
     <Navbar/>
@@ -35,8 +61,8 @@ export default function Feedback() {
                     </div>
                     <div className="review">
                         <h2>Review</h2>
-                        <input type='text' placeholder="Write Feedback" className="txt-feedback" multiple={true}></input>
-                        <button type="submit" className="btn-sendfeedback">SEND</button>
+                        <input type='text' placeholder="Write Feedback" className="txt-feedback" value={feedback} onChange={(e)=>{setFeedback(e.target.value)}}></input>
+                        <button type="submit" className="btn-sendfeedback" onClick={handleFeedBack}>SEND</button>
                     </div>
                 </div>
             </div>
