@@ -15,7 +15,7 @@ export default function Message() {
     const [profilepic, setProfilepic] = useState('');
     const [user, setUser] = useState({});
     const [newMsg, setNewMsg] = useState("");
-    const socket = useRef(io("ws://localhost:8900"));
+    const socket = useRef();
     const [receiverId, setReceiverId] = useState("");
     const [arrivalMessage, setArrivalMessage] = useState(null);
 
@@ -34,7 +34,7 @@ export default function Message() {
 
     useEffect(() => {
         arrivalMessage && arrivalMessage.sender === receiverId && setMessages((prev) => [...prev, arrivalMessage]);
-    }, [arrivalMessage, receiverId])
+    }, [arrivalMessage, receiverId]);
 
     useEffect(() => {
         socket.current.emit("addUser", userid);
@@ -181,7 +181,6 @@ export default function Message() {
                             <span>Open a conversation to start a chat</span>
                         </div>
                 }
-                {/* <div className='no-chatbox'>Open a conversation to start a chat</div> */}
             </div>
         </>
     )
