@@ -1488,6 +1488,11 @@ ul.prise-list-merge li.prise_list.selected {
     padding: 0 30px;
     color: #fff;
     border-radius: 16px;
+    cursor: pointer;
+}
+
+.send-btn:hover {
+    background-color: #66BD9E;
 }
 
 .msg-box {

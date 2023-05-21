@@ -34,7 +34,7 @@ export default function Message() {
 
     useEffect(() => {
         arrivalMessage && arrivalMessage.sender === receiverId && setMessages((prev) => [...prev, arrivalMessage]);
-    }, [arrivalMessage, receiverId])
+    }, [arrivalMessage, receiverId]);
 
     useEffect(() => {
         socket.current.emit("addUser", userid);
@@ -181,7 +181,6 @@ export default function Message() {
                             <span>Open a conversation to start a chat</span>
                         </div>
                 }
-                {/* <div className='no-chatbox'>Open a conversation to start a chat</div> */}
             </div>
         </>
     )
