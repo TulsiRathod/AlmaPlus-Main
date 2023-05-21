@@ -688,7 +688,7 @@ a {
     color: #66bd9e;
     text-transform: uppercase;
     font-size: 9px;
-    width: 25%;
+    width: 20%;
     float: left;
     position: relative;
     letter-spacing: 1px;
@@ -754,7 +754,7 @@ a {
 }
 
 .datefield span {
-    padding: 10px;
+    padding: 0 10px 10px;
     align-self: flex-start;
 }
 
@@ -771,7 +771,7 @@ a {
     font-size: 16px;
     line-height: 30px;
     color: #a5a5a5;
-    padding: 10px 20px;
+    padding: 10px 15px;
     height: auto;
     border-radius: 16px;
     cursor: pointer;
@@ -815,7 +815,6 @@ ul.prise-list-merge li:hover {
     top: 62px;
     margin: 0;
     list-style: none;
-    padding: 7px;
     background-color: #fff;
     box-shadow: 0px 5px 8px rgb(0 0 0 / 15%);
     border-radius: 10px;
@@ -827,7 +826,6 @@ span.prise_down_icon {
     position: absolute;
     width: 24px;
     height: 24px;
-    /* background-image: url(../images/vector_bottom.svg); */
     border: none;
     top: 0;
     left: unset;
@@ -839,12 +837,9 @@ span.prise_down_icon {
 }
 
 span.prise-data {
-    font-weight: 500;
     font-size: 14px;
-    padding: 0 0 0 10px;
-    line-height: 30px;
-    letter-spacing: 0.05em;
-    color: #414141;
+    display: flex;
+    align-items: self-start;
 }
 
 ul.prise-list-merge li.prise_list.selected {
@@ -869,6 +864,49 @@ ul.prise-list-merge li.prise_list.selected {
     font-size: 12px;
     margin: -10px 0 10px;
 }
+
+.information-profile-img {
+    
+  }
+  
+  .profile-uload {
+    
+    position: relative;
+    margin: 0 auto;
+    text-align: center;
+    width: 200px;
+    max-width: 100%;
+  }
+  
+  .profile-uload img {
+    border-radius: 50%;
+  }
+
+  .information-profile-upload label {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #008ef9;
+    position: relative;
+  }
+  
+  .information-profile-upload label input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+  
+  .information-profile-upload {
+    position: absolute;
+    right: 4px;
+    bottom: 0;
+  }
 
 
 /* ****************** Home Page ************************* */

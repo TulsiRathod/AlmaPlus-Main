@@ -31,9 +31,9 @@ export default function Login() {
     return isValid;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async() => {
     if (validate()) {
-      axios({
+     await axios({
         method: "post",
         data: {
           email: user.email,
@@ -53,9 +53,9 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("AlmaPlus_Id") !== null) {
-      nav('/home');
-    }
+    // if (localStorage.getItem("AlmaPlus_Id") !== null) {
+    //   nav('/home');
+    // }
   })
 
   return (

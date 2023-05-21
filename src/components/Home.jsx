@@ -29,9 +29,9 @@ export default function Home() {
     setFileList(e.target.files);
   }
 
-  const getUser = () => {
+  const getUser = async() => {
     const userID = localStorage.getItem("AlmaPlus_Id");
-    axios({
+    await axios({
       method: 'get',
       url: `${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response) => {
@@ -41,8 +41,8 @@ export default function Home() {
     });
   }
 
-  const getPost = () => {
-    axios({
+  const getPost = async() => {
+   await axios({
       method: 'get',
       url: `${WEB_URL}/api/getPost`
     }).then((Response) => {
@@ -52,7 +52,7 @@ export default function Home() {
     });
   }
 
-  const addPost = () => {
+  const addPost = async() => {
     var body = new FormData();
     body.append("userid", localStorage.getItem("AlmaPlus_Id"));
     body.append("description", description);
@@ -65,7 +65,7 @@ export default function Home() {
     body.append("designation", user.designation);
     body.append("uscompanyname", user.companyname);
     body.append("profilepic", user.profilepic);
-    axios({
+   await axios({
       url: `${WEB_URL}/api/addPost`,
       method: 'post',
       headers: {
@@ -83,8 +83,8 @@ export default function Home() {
   }
 
 
-  const getEvents = () => {
-    axios({
+  const getEvents = async() => {
+   await axios({
       method: 'get',
       url: `${WEB_URL}/api/getEvents`
     }).then((Response) => {
