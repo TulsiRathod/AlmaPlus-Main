@@ -22,7 +22,7 @@ export default function Message() {
     // const scrollRef = useRef();
 
     useEffect(() => {
-        socket.current = io("ws://20.106.152.112:8900");
+        socket.current = io("ws://localhost:8900");
         socket.current.on("getMessage", data => {
             setArrivalMessage({
                 sender: data.senderId,
@@ -43,14 +43,14 @@ export default function Message() {
         })
         getConversation();
         getUser();
-    }, [userid]);
+    }, []);
 
     const getConversation = () => {
         axios({
             url: `${WEB_URL}/api/getConversations/${userid}`,
             method: "get",
         }).then((response) => {
-            console.log(response);
+            // console.log(response);
             setConversationID(response.data.data);
             // console.log("conversationID :" + conversationID);
         }).catch((error) => {

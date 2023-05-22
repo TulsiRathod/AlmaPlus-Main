@@ -8,7 +8,7 @@ function ChatUser({ userid, setCurrentId, setName, setProfilepic, setReceiverId 
     const myid = localStorage.getItem("AlmaPlus_Id");
     const getUser = () => {
         if (userId !== '') {
-             axios({
+            axios({
                 method: 'get',
                 url: `${WEB_URL}/api/searchUserById/${userId}`
             }).then((Response) => {

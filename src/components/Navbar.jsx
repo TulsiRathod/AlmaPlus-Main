@@ -11,13 +11,25 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
-import {toast } from "react-toastify";
+import { toast } from "react-toastify";
 
-export default function Navbar() {
+export default function Navbar({ socket }) {
+
+  const [notification, setNotification] = useState([]);
+
+  useEffect(() => {
+    // socket.current.on("getNotification", data => {
+    //   setNotification((prev) => [...prev, data]);
+    // })
+  }, [socket]);
+
+  console.log(notification);
+
+
   const [state, setState] = React.useState({
     right: false,
   });
-  const [user,setUser]=useState({});
+  const [user, setUser] = useState({});
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -30,14 +42,14 @@ export default function Navbar() {
     setState({ ...state, [anchor]: open });
   };
 
-  const getUser=()=>{
-    const userID=localStorage.getItem("AlmaPlus_Id");
+  const getUser = () => {
+    const userID = localStorage.getItem("AlmaPlus_Id");
     axios({
-      method:'get',
-      url:`${WEB_URL}/api/searchUserById/${userID}`
-    }).then((Response)=>{
+      method: 'get',
+      url: `${WEB_URL}/api/searchUserById/${userID}`
+    }).then((Response) => {
       setUser(Response.data.data[0]);
-    }).catch((error)=>{
+    }).catch((error) => {
       toast.error("Something Went Wrong");
     });
   }
@@ -53,7 +65,7 @@ export default function Navbar() {
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
-      style={{color:"#7e7f81"}}
+      style={{ color: "#7e7f81" }}
     >
       <div
         style={{
@@ -62,7 +74,7 @@ export default function Navbar() {
           padding: "10px",
           alignItems: "center",
           fontSize: "30px",
-          color:"black"
+          color: "black"
         }}
       >
         <i class="fa-solid fa-xmark"></i>
@@ -158,10 +170,10 @@ export default function Navbar() {
     const pathname = window.location.pathname;
     if (pathname === "/register") {
       setMenus(false);
-    }else{
+    } else {
       getUser();
     }
-    
+
   }, []);
 
   return (
@@ -217,37 +229,37 @@ export default function Navbar() {
           ""
         )}
 
-        {menus?
-        <div class="navbar-right">
-        <div className="nav-profile" onClick={() => {
+        {menus ?
+          <div class="navbar-right">
+            <div className="nav-profile" onClick={() => {
               nav("/view-profile");
             }}>
-          {user.profilepic?<img src={`${WEB_URL}${user.profilepic}`} alt=""  class="nav-profile-img"/>:<img src="images/profile1.png"  class="nav-profile-img"></img>}
-          <div class="user-profile">
-          {user.fname?<span>{user.fname} {user.lname}</span>:<span>USER</span>}
-          </div>
-        </div>
-        
-         <div className="nav-search-bar">
-         <i class="fa-solid fa-magnifying-glass" onClick={()=>{nav('/search-profile')}}></i>
-         <React.Fragment>
-           <Button onClick={toggleDrawer("right", true)}>
-             <i class="fa-solid fa-bars"></i>
-           </Button>
-           <SwipeableDrawer
-             anchor="right"
-             open={state["right"]}
-             onClose={toggleDrawer("right", false)}
-             onOpen={toggleDrawer("right", true)}
-           >
-             {list("right")}
-           </SwipeableDrawer>
-         </React.Fragment>
-       </div>
-        <div>
-        </div>
-      </div>:""  
-      }
+              {user.profilepic ? <img src={`${WEB_URL}${user.profilepic}`} alt="" class="nav-profile-img" /> : <img src="images/profile1.png" class="nav-profile-img"></img>}
+              <div class="user-profile">
+                {user.fname ? <span>{user.fname} {user.lname}</span> : <span>USER</span>}
+              </div>
+            </div>
+
+            <div className="nav-search-bar">
+              <i class="fa-solid fa-magnifying-glass" onClick={() => { nav('/search-profile') }}></i>
+              <React.Fragment>
+                <Button onClick={toggleDrawer("right", true)}>
+                  <i class="fa-solid fa-bars"></i>
+                </Button>
+                <SwipeableDrawer
+                  anchor="right"
+                  open={state["right"]}
+                  onClose={toggleDrawer("right", false)}
+                  onOpen={toggleDrawer("right", true)}
+                >
+                  {list("right")}
+                </SwipeableDrawer>
+              </React.Fragment>
+            </div>
+            <div>
+            </div>
+          </div> : ""
+        }
 
       </nav>
     </>

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
+import { io } from "socket.io-client";
 
 export default function Home() {
   const settings = {
@@ -18,6 +19,7 @@ export default function Home() {
   const [post, setPost] = useState([]);
   const [description, setDescription] = useState("");
   const [events, setEvents] = useState([]);
+  const socket = useRef();
   const [fileList, setFileList] = useState(null);
   const files = fileList ? [...fileList] : [];
   const userID = localStorage.getItem("AlmaPlus_Id");
@@ -30,8 +32,8 @@ export default function Home() {
   }
 
   const getUser = () => {
-   
-     axios({
+
+    axios({
       method: 'get',
       url: `${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response) => {
@@ -47,7 +49,7 @@ export default function Home() {
       url: `${WEB_URL}/api/getPost`
     }).then((Response) => {
       setPost(Response.data.data.reverse());
-      console.log(Response);
+      // console.log(Response);
     }).catch((error) => {
       console.log(error);
     });
@@ -100,37 +102,50 @@ export default function Home() {
     nav("/");
   }
 
-  const handleLike=(id)=>{
-    console.log(id);
-    const userID=localStorage.getItem("AlmaPlus_Id");
+  const handleLike = (elem) => {
+    console.log(elem);
+    const userID = localStorage.getItem("AlmaPlus_Id");
     axios({
-      method:"put",
-      url:`${WEB_URL}/api/like/${id}`,
-      data:{
-        userId:userID
+      method: "put",
+      url: `${WEB_URL}/api/like/${elem._id}`,
+      data: {
+        userId: userID
       }
-    }).then((response)=>{
+    }).then((response) => {
       console.log(response);
+      socket.current.emit("sendNotification", {
+        senderid: userID,
+        receiverid: elem.userid,
+        type: 1
+      })
       getPost();
-    }).catch((error)=>{
+    }).catch((error) => {
       console.log(error);
     })
   }
 
   useEffect(() => {
+    socket.current = io("ws://localhost:8900");
     getUser();
     getPost();
     getEvents();
   }, [])
 
+  useEffect(() => {
+    socket.current.emit("addUser", userID);
+    socket.current.on("getUsers", users => {
+      console.log(users);
+    })
+  }, [userID]);
+
   return (
     <>
-      <Navbar />
+      <Navbar socket={socket} />
       <div className="home-container">
         <div className="profile-card-main">
           <div className="profile-card">
             <div className="profile-card-imgbox">
-              {user.profilepic?<img src={`${WEB_URL}${user.profilepic}`} alt=""  className="profile-card-img"/>:<img src="images/profile1.png"  className="profile-card-img"></img>}
+              {user.profilepic ? <img src={`${WEB_URL}${user.profilepic}`} alt="" className="profile-card-img" /> : <img src="images/profile1.png" className="profile-card-img"></img>}
             </div>
 
             <div className="profile-card-info">
@@ -158,7 +173,7 @@ export default function Home() {
 
         <div className="home-post-main">
           <div className="new-post-box">
-            {user.profilepic?<img src={`${WEB_URL}${user.profilepic}`} alt="" />:<img src="images/profile1.png"></img>}
+            {user.profilepic ? <img src={`${WEB_URL}${user.profilepic}`} alt="" /> : <img src="images/profile1.png"></img>}
             <div className="new-post-content">
               <div className="new-post-text">
                 <input type="text" placeholder="Write Here" name="description" value={description} onChange={(e) => { setDescription(e.target.value) }} />
@@ -214,13 +229,13 @@ export default function Home() {
                       <div className="post-images">
                         <Slider {...settings}>
                           {elem.photos.map((el) =>
-                            <img src={`${WEB_URL}${el}`} alt="" className="post-image" onDoubleClick={()=>{handleLike(elem._id)}}/>
+                            <img src={`${WEB_URL}${el}`} alt="" className="post-image" onDoubleClick={() => { handleLike(elem._id) }} />
                           )}
                         </Slider>
                       </div> : ""
                     }
                     <div className="likebar">
-                      <i className={`${elem.likes.includes(userID.toString())?"fa-solid fa-heart":"fa-regular fa-heart"}`} style={{color:`${elem.likes.includes(userID.toString())?"#FF0000":"#000000"}`}} onClick={()=>{handleLike(elem._id);}}></i><span>{elem.likes.length}</span>
+                      <i className={`${elem.likes.includes(userID.toString()) ? "fa-solid fa-heart" : "fa-regular fa-heart"}`} style={{ color: `${elem.likes.includes(userID.toString()) ? "#FF0000" : "#000000"}` }} onClick={() => { handleLike(elem); }}></i><span>{elem.likes.length}</span>
                     </div>
                   </div>
                 )}
