@@ -214,7 +214,7 @@ export default function Home() {
                       <div className="post-images">
                         <Slider {...settings}>
                           {elem.photos.map((el) =>
-                            <img src={`${WEB_URL}${el}`} alt="" className="post-image" />
+                            <img src={`${WEB_URL}${el}`} alt="" className="post-image" onDoubleClick={()=>{handleLike(elem._id)}}/>
                           )}
                         </Slider>
                       </div> : ""
