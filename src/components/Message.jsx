@@ -45,8 +45,8 @@ export default function Message() {
         getUser();
     }, [userid]);
 
-    const getConversation = async() => {
-       await axios({
+    const getConversation = () => {
+        axios({
             url: `${WEB_URL}/api/getConversations/${userid}`,
             method: "get",
         }).then((response) => {
@@ -58,9 +58,9 @@ export default function Message() {
         })
     }
 
-    const getMessages =async () => {
+    const getMessages = () => {
         if (currentId !== "") {
-           await axios({
+            axios({
                 url: `${WEB_URL}/api/getMessages/${currentId}`,
                 method: "get",
             }).then((response) => {
@@ -77,9 +77,9 @@ export default function Message() {
         getMessages();
     }, [currentId]);
 
-    const getUser = async() => {
+    const getUser = () => {
         if (userid !== '') {
-           await axios({
+            axios({
                 method: 'get',
                 url: `${WEB_URL}/api/searchUserById/${userid}`
             }).then((Response) => {
@@ -91,7 +91,7 @@ export default function Message() {
         }
     }
 
-    const sendMessage = async(e) => {
+    const sendMessage = (e) => {
         e.preventDefault();
         socket.current.emit("sendMessage", {
             senderId: userid,
@@ -100,7 +100,7 @@ export default function Message() {
         });
 
         if (newMsg !== '') {
-           await axios({
+            axios({
                 method: 'post',
                 url: `${WEB_URL}/api/newMessage`,
                 data: {

@@ -30,9 +30,9 @@ export default function Navbar() {
     setState({ ...state, [anchor]: open });
   };
 
-  const getUser=async()=>{
+  const getUser=()=>{
     const userID=localStorage.getItem("AlmaPlus_Id");
-   await axios({
+    axios({
       method:'get',
       url:`${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response)=>{

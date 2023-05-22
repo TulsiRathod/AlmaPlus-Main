@@ -166,7 +166,7 @@ export default function Register() {
     return isValid;
   };
 
-  const handleSubmit = async() => {
+  const handleSubmit = () => {
     if (validate()) {
               
       var lang=languages.map((elem)=>{
@@ -196,7 +196,7 @@ export default function Register() {
         role: user.role,
       };
       const myurl = `${WEB_URL}/api/register`;
-     await axios({
+      axios({
         method: "post",
         url: myurl,
         data: body,
@@ -216,10 +216,10 @@ export default function Register() {
     }
   };
 
-  const handleImgChange = async(e) => {
+  const handleImgChange = (e) => {
     var body = new FormData();
     body.append("profilepic", e.target.files[0]);
-   await axios({
+    axios({
       method: "post",
       headers: { "Content-Type": "multipart/form-data" },
       url: `${WEB_URL}/api/uploadUserImage`,
@@ -232,8 +232,8 @@ export default function Register() {
       .catch((error) => {});
   };
 
-  const getUniversity =async () => {
-    await axios({
+  const getUniversity = () => {
+     axios({
       method: "get",
       url: `${WEB_URL}/api/getInstitutes`,
     }).then((response) => {

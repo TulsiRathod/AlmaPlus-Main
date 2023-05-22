@@ -186,7 +186,10 @@ a {
 }
 
 .profile-container-inner {
-    padding: 0 4% 16px;
+    padding: 16px 4%;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .profile-pic {
@@ -2592,5 +2595,7 @@ ul li {
     border-radius: 0.5rem;
     max-width: 30rem;
     color: #383838;
+    display: flex;
+    flex-direction: column;
   }
   

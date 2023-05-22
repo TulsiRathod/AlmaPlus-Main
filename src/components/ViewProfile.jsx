@@ -3,16 +3,21 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
-import Modal from "./Modal";
+import EditProfileModal from "./EditProfileModal";
+
 
 export default function ViewProfile() {
   const [user,setUser]=useState({});
   const [add,setAdd]=useState();
   const [language,setLanguage]=useState([]);
   const [skills,setSkills]=useState([]);
-  const getUser=async()=>{
+  const [education,setEducation]=useState([]);
+  
+  const[showModal,setshowmodal]=useState(false);
+  const closeModal =()=>setshowmodal(false);
+  const getUser=()=>{
     const userID=localStorage.getItem("AlmaPlus_Id");
-   await axios({
+   axios({
       method:'get',
       url:`${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response)=>{
@@ -25,11 +30,29 @@ export default function ViewProfile() {
       toast.error("Something Went Wrong");
     });
   }
-  const[showModal,setshowmodal]=useState(false);
-  const closeModal =()=>setshowmodal(false);
+
+  const getEducation=()=>{
+    const userID=localStorage.getItem("AlmaPlus_Id");
+    console.log(userID);
+    axios({
+      method:'post',
+      url:`${WEB_URL}/api/getEducation`,
+      data:{
+        "userid":"6465b03595266219d3036fa2",
+      },
+    }).then((Response)=>{
+      console.log(Response.data.data);
+      setEducation(Response.data.data);
+    }).catch((Error)=>{
+      console.log(Error);
+    })
+  }
+
+  
 
   useEffect(()=>{
     getUser();
+    getEducation();
   },[])
 
   return (
@@ -40,15 +63,20 @@ export default function ViewProfile() {
           <div className="profile-container">
             <div className="profile-cover"></div>
             <div className="profile-container-inner">
-              <img src={`${WEB_URL}${user.profilepic}`} alt="" className="profile-pic" />
+              <div><img src={`${WEB_URL}${user.profilepic}`} alt="" className="profile-pic" />
               <h1>{user.fname} {user.lname}</h1>
               <b>
                 {user.designation} {user.companyname?`at ${user.companyname}`:""}
               </b>
               <p>
-               Surat, Gujarat, India  &middot; <a onClick={()=> setshowmodal(true)}>Contact info</a>
+                {user.institute}
               </p>
+              <p>
+               Surat, Gujarat, India  &middot; <a>Contact info</a>
+              </p></div>
+              <div className="edit-icon"><i class="fa-solid fa-pencil" onClick={()=> setshowmodal(true)}></i></div>
             </div>
+            
           </div>
 
           {user.about!==""?<div className="profile-description">
@@ -108,30 +136,22 @@ export default function ViewProfile() {
             </a>
           </div>
 
-          <div className="profile-description">
+          {education.length>0?<div className="profile-description">
             <h2>Education</h2>
-            <div className="profile-desc-row">
-              <img src="/images/DAIICT-LOGO.jpg" alt="" />
-              <div>
-                <h3>
-                  Dhirubhai Ambani Insitute of Information and Communication
-                  Technology
-                </h3>
-                <b>MSC, Information Technology</b>
-                <b>2021 - 2023</b>
-                <hr />
-              </div>
-            </div>
-            <div className="profile-desc-row">
-              <img src="/images/VNSGU-LOGO.jpg" alt="" />
-              <div>
-                <h3>Veer Narmad South Gujarat Univercity</h3>
-                <b>BSC, Information Technology</b>
-                <b>2018 - 2021</b>
-                <hr />
-              </div>
-            </div>
-          </div>
+            {education.map((elem)=>
+               <div className="profile-desc-row">
+               <img src={`${WEB_URL}${elem.collagelogo}`} alt="" />
+               <div>
+                 <h3>
+                   {elem.institutename}
+                 </h3>
+                 <b>{elem.course}</b>
+                 <b>{elem.joinyear.split("-")[0]} - {elem.endyear.split("-")[0]}</b>
+                 <hr />
+               </div>
+             </div>
+            )}
+          </div>:null}
 
           {skills.length>0?<div className="profile-description">
             <h3>Skills</h3>
@@ -186,7 +206,7 @@ export default function ViewProfile() {
           </div>
         </div>
       </div>
-      {showModal &&<Modal closeModal={closeModal}/>}
+      {showModal &&<EditProfileModal closeModal={closeModal} user={user} setUser={setUser}/>}
     </>
   );
 }

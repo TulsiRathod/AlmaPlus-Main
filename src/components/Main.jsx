@@ -19,7 +19,7 @@ function Main() {
         <div class="banner-left">
             <img src="images/Logo.jpg" alt="logo" id="logo" width='40px'/>
             <h1>ALMAPLUS</h1>
-            <p>A Platform for Alumni and Student to CONNECT together.</p>
+            <p>A Platform for Alumni and Student to Connect together.</p>
             <div class="banner-btn">
                 Register Institute
             </div>

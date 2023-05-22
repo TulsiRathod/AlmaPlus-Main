@@ -31,9 +31,9 @@ export default function Login() {
     return isValid;
   };
 
-  const handleLogin = async() => {
+  const handleLogin =() => {
     if (validate()) {
-     await axios({
+      axios({
         method: "post",
         data: {
           email: user.email,

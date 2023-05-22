@@ -20,7 +20,7 @@ export default function Home() {
   const [events, setEvents] = useState([]);
   const [fileList, setFileList] = useState(null);
   const files = fileList ? [...fileList] : [];
-
+  const userID = localStorage.getItem("AlmaPlus_Id");
   const uploadImg = () => {
     document.getElementById('myFileInput').click();
   }
@@ -29,9 +29,9 @@ export default function Home() {
     setFileList(e.target.files);
   }
 
-  const getUser = async() => {
-    const userID = localStorage.getItem("AlmaPlus_Id");
-    await axios({
+  const getUser = () => {
+   
+     axios({
       method: 'get',
       url: `${WEB_URL}/api/searchUserById/${userID}`
     }).then((Response) => {
@@ -41,8 +41,8 @@ export default function Home() {
     });
   }
 
-  const getPost = async() => {
-   await axios({
+  const getPost = () => {
+    axios({
       method: 'get',
       url: `${WEB_URL}/api/getPost`
     }).then((Response) => {
@@ -53,7 +53,7 @@ export default function Home() {
     });
   }
 
-  const addPost = async() => {
+  const addPost = () => {
     var body = new FormData();
     body.append("userid", localStorage.getItem("AlmaPlus_Id"));
     body.append("description", description);
@@ -66,7 +66,7 @@ export default function Home() {
     body.append("designation", user.designation);
     body.append("uscompanyname", user.companyname);
     body.append("profilepic", user.profilepic);
-   await axios({
+    axios({
       url: `${WEB_URL}/api/addPost`,
       method: 'post',
       headers: {
@@ -84,8 +84,8 @@ export default function Home() {
   }
 
 
-  const getEvents = async() => {
-   await axios({
+  const getEvents = () => {
+    axios({
       method: 'get',
       url: `${WEB_URL}/api/getEvents`
     }).then((Response) => {
@@ -98,6 +98,23 @@ export default function Home() {
   const Logout = () => {
     localStorage.clear();
     nav("/");
+  }
+
+  const handleLike=(id)=>{
+    console.log(id);
+    const userID=localStorage.getItem("AlmaPlus_Id");
+    axios({
+      method:"put",
+      url:`${WEB_URL}/api/like/${id}`,
+      data:{
+        userId:userID
+      }
+    }).then((response)=>{
+      console.log(response);
+      getPost();
+    }).catch((error)=>{
+      console.log(error);
+    })
   }
 
   useEffect(() => {
@@ -203,7 +220,7 @@ export default function Home() {
                       </div> : ""
                     }
                     <div className="likebar">
-                      <i className="fa-regular fa-heart"></i><span>{elem.likes.length}</span>
+                      <i className={`${elem.likes.includes(userID.toString())?"fa-solid fa-heart":"fa-regular fa-heart"}`} style={{color:`${elem.likes.includes(userID.toString())?"#FF0000":"#000000"}`}} onClick={()=>{handleLike(elem._id);}}></i><span>{elem.likes.length}</span>
                     </div>
                   </div>
                 )}
