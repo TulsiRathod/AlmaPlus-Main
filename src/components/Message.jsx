@@ -43,7 +43,7 @@ export default function Message() {
         })
         getConversation();
         getUser();
-    }, []);
+    }, [userid]);
 
     const getConversation = () => {
         axios({

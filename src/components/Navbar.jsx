@@ -13,19 +13,7 @@ import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
 
-export default function Navbar({ socket }) {
-
-  const [notification, setNotification] = useState([]);
-
-  useEffect(() => {
-    // socket.current.on("getNotification", data => {
-    //   setNotification((prev) => [...prev, data]);
-    // })
-  }, [socket]);
-
-  console.log(notification);
-
-
+export default function Navbar() {
   const [state, setState] = React.useState({
     right: false,
   });
@@ -92,6 +80,21 @@ export default function Navbar({ socket }) {
           <ListItemButton>
             <i class="fa-solid fa-house" style={{ padding: "10px 15px" }}></i>
             <ListItemText primary={"Home"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          key={"search"}
+          disablePadding
+          onClick={() => {
+            nav("/search-profile");
+          }}
+        >
+          <ListItemButton>
+            <i
+              class="fa-solid fa-magnifying-glass"
+              style={{ padding: "10px 15px" }}
+            ></i>
+            <ListItemText primary={"search"} />
           </ListItemButton>
         </ListItem>
         <ListItem
@@ -183,17 +186,6 @@ export default function Navbar({ socket }) {
           <Link to="/" class="logo">
             <img src="/images/Logo.jpg" />
           </Link>
-          {menus ? (
-            <div class="search-box">
-              <i
-                class="fa-sharp fa-solid fa-magnifying-glass"
-                style={{ color: "#787878" }}
-              ></i>
-              <input type="text" placeholder="search" />
-            </div>
-          ) : (
-            ""
-          )}
         </div>
         {menus ? (
           <div class="navbar-center">
@@ -204,13 +196,18 @@ export default function Navbar({ socket }) {
                   <span>Home</span>
                 </li>
               </Link>
+              <Link to="/search-profile">
+                <li>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Search</span>
+                </li>
+              </Link>
               <Link to="/events">
                 <li>
                   <i class="fa-solid fa-calendar"></i>
                   <span>Events</span>
                 </li>
               </Link>
-
               <Link to="/message">
                 <li>
                   <i class="fa-solid fa-message"></i>

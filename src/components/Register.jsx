@@ -81,6 +81,7 @@ export default function Register() {
     dob: "",
     city: "",
     state:"",
+    country:"",
     profilepic: "",
     phone: "",
     email: "",
@@ -203,9 +204,7 @@ export default function Register() {
       })
         .then((res) => {
           toast.success("Register Successful");
-          setTimeout(()=>{
             nav("/login");
-          },1000)
         })
         .catch((err) => {
           toast.error(err.response.data.msg);
@@ -449,30 +448,6 @@ export default function Register() {
                     <h3 className="fs-subtitle">
                       Tell us something more about you
                     </h3>
-                    <input
-                      type="text"
-                      name="country"
-                      placeholder="Country"
-                      value={user.country}
-                      onChange={handleChange}
-                    />
-                    <div className="text-danger">{errors.country_err}</div>
-                    <input
-                      type="text"
-                      name="state"
-                      placeholder="State"
-                      value={user.state}
-                      onChange={handleChange}
-                    />
-                    <div className="text-danger">{errors.state_err}</div>
-                    <input
-                      type="text"
-                      name="city"
-                      placeholder="City"
-                      value={user.city}
-                      onChange={handleChange}
-                    />
-                    <div className="text-danger">{errors.city_err}</div>
                     <div
                       class="prise_main_drop"
                       onClick={() => setUniversityShow(!universityShow)}
@@ -513,9 +488,7 @@ export default function Register() {
                             </li>
                           ))}
                         </ul>
-                      ) : (
-                        <li>Intitutes Not Found</li>
-                      )}
+                      ) : null}
                     </div>
                     <div className="text-danger">{errors.institute_err}</div>
                      <Select
@@ -526,7 +499,7 @@ export default function Register() {
                       value={languages}
                       styles={colorStyle}
                     ></Select>
-                    <div className="text-danger" style={{marginTop:"10px"}}>{errors.languages_err}</div>
+                    <div className="text-danger" style={{margin:"10px"}}>{errors.languages_err}</div>
                     <Select
                       options={option2}
                       isMulti
@@ -535,7 +508,31 @@ export default function Register() {
                       value={skills}
                       styles={colorStyle}
                     ></Select>
-                    <div className="text-danger">{errors.skills_err}</div>
+                    <div className="text-danger" style={{margin:"10px"}}>{errors.skills_err}</div>
+                    <input
+                      type="text"
+                      name="country"
+                      placeholder="Country"
+                      value={user.country}
+                      onChange={handleChange}
+                    />
+                    <div className="text-danger">{errors.country_err}</div>
+                    <input
+                      type="text"
+                      name="state"
+                      placeholder="State"
+                      value={user.state}
+                      onChange={handleChange}
+                    />
+                    <div className="text-danger">{errors.state_err}</div>
+                    <input
+                      type="text"
+                      name="city"
+                      placeholder="City"
+                      value={user.city}
+                      onChange={handleChange}
+                    />
+                    <div className="text-danger">{errors.city_err}</div>
                     <input
                       type="button"
                       name="previous"

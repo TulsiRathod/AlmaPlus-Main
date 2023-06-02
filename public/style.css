@@ -50,29 +50,6 @@ a {
     border-radius: 8px;
 }
 
-.search-box {
-    background: #f0f2f5;
-    width: 250px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-    height: 50px;
-}
-
-.search-box i {
-    width: 14px;
-}
-
-.search-box input {
-    width: 100%;
-    background: transparent;
-    padding: 8px;
-    outline: none;
-    border: none;
-    font-size: 15px;
-}
-
 .navbar-center ul li {
     display: inline-block;
     list-style: none;
@@ -137,6 +114,7 @@ a {
     display: block;
     cursor: pointer;
     position: relative;
+    object-fit: cover;
 }
 
 .user-profile {
@@ -342,6 +320,11 @@ a {
     font-size: 12px;
     background: #e4e6eb;
     font-weight: 500;
+}
+
+.contactInfo div{
+    margin: 10px 5px;
+    cursor: pointer;
 }
 
 
@@ -755,6 +738,10 @@ a {
     display: flex;
     align-items: center;
     flex-direction: column;
+}
+
+.datefield input{
+    width: 100%;
 }
 
 .datefield span {
@@ -1228,7 +1215,6 @@ ul.prise-list-merge li.prise_list.selected {
 .upcoming-event {
     margin: 5px;
     display: flex;
-    justify-content: space-evenly;
     border-top: 1px solid #7e7f81;
     padding-top: 10px;
 }
@@ -1842,11 +1828,11 @@ ul.prise-list-merge li.prise_list.selected {
 
 .body1 {
     min-height: 100vh;
-    /* display: flex; */
-    align-items: center;
-    justify-content: center;
-    /* margin: auto; */
+    display: flex;
+    flex-direction: column;
     background-color: #efefef;
+    align-items: center;
+    width: 100%;
 }
 
 .card-wrapper {
@@ -1855,6 +1841,42 @@ ul.prise-list-merge li.prise_list.selected {
     align-items: center;
     flex-wrap: wrap;
 }
+
+.no-search-img{
+    height: 500px;
+}
+
+.search-hearder{
+    display: flex;
+    align-items: center;
+}
+
+.search-box {
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    height: 50px;
+    margin: 10px;
+    width: 300px;
+}
+
+.search-box i {
+    width: 14px;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.search-box input {
+    width: 100%;
+    background: transparent;
+    padding: 8px;
+    outline: none;
+    border: none;
+    font-size: 15px;
+}
+
 
 .card-wrapper .card {
     margin: 10px;
@@ -2288,15 +2310,10 @@ ul li {
 }
 
 #email-input {
-    margin-left: 15px;
     width: 90%;
     padding: 12px 20px;
-    border: 1px solid #ccc;
-    border-radius: 16px;
-}
-
-#email-input:focus {
-    outline-color: #66BD9E;
+    outline: none;
+    border: none;
 }
 
 .user-email {
@@ -2304,6 +2321,10 @@ ul li {
     align-items: center;
     justify-content: center;
     width: 100%;
+    margin-left: 15px;
+    padding: 12px 20px;
+    background-color: #fff;
+    border-radius: 16px;
 }
 
 /* Reset Password */
@@ -2339,6 +2360,141 @@ ul li {
 .reset-right input{
     margin: 10px 0;
 }
+
+
+/* Modal CSS */
+
+
+.modal-wrapper{
+    position:fixed;
+    left:0;
+    right: 0;
+    bottom: 0;
+    top:0;
+    background-color: rgba(189,189,189,0.9);
+  }
+  
+  .modal-container{
+    position: fixed;
+    top:50%;
+    left: 50%;
+    transform:translate(-50%,-50%) ;
+    justify-content: space-between;
+    background-color: #f3f2ef;
+    padding: 20px 30px;
+    border-radius: 0.5rem;
+    color: #383838;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+  }
+
+  .edit-profile-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+  }
+
+  .edit-profile-details{
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    overflow-y: scroll;
+  }
+
+  .edit-profile-details input{
+    padding: 12px;
+    margin: 5px 0 10px;
+    border-radius: 16px;
+    border: 1px solid #7e7f81;
+
+  }
+
+  .edit-profile-details .buttons{
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .edit-profile-details .select{
+    margin: 5px 0 10px;
+  }
+
+  .addEdit-experience input{
+    padding: 12px;
+    margin: 5px 0 10px;
+    border-radius: 16px;
+    border: 1px solid #7e7f81;
+    width: 100%;
+  }
+
+  .addEdit-experience .buttons{
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .edit-experience{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-experience div{
+    display: flex;
+}
+
+.ex_logo{
+    margin: 10px;
+}
+
+.edit-experience .ex-button{
+    display: flex;
+}
+
+    .edit-experience .ex_details{
+        display: flex;
+        flex-direction: column;
+        margin: 10px;
+    }
+
+.action-button-confirm{
+    width: 100px;
+    background: #66bd9e;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 20px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+  }
+
+  .action-button-delete{
+    width: 100px;
+    background: #d42929;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 20px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+  }
+
+
+  .action-button-cancel{
+    width: 100px;
+    background: #a7ece6;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+  }
+
 
 /* Responsive Login */
 
@@ -2406,9 +2562,6 @@ ul li {
         align-items: center;
     }
     .nav-profile {
-        display: none;
-    }
-    .search-box {
         display: none;
     }
     .new-post-box {
@@ -2498,6 +2651,12 @@ ul li {
     }
 }
 
+@media only screen and (max-width: 786px) {
+    .modal-container{
+        width: 300px;
+    }
+}
+
 
 /* Responsive Notification */
 
@@ -2571,31 +2730,36 @@ ul li {
         padding: 20px;
     }
 }
-
-/* Modal CSS */
-
-
-.modal-wrapper{
-    position:fixed;
-    left:0;
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
     right: 0;
-    bottom: 0;
-    top:0;
-    background-color: rgba(189,189,189,0.9);
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    font-size: 14px;
   }
   
-  .modal-container{
-    position: fixed;
-    top:50%;
-    left: 50%;
-    transform:translate(-50%,-50%) ;
-    justify-content: space-between;
-    background-color: #f3f2ef;
-    padding: 2rem 3rem;
-    border-radius: 0.5rem;
-    max-width: 30rem;
-    color: #383838;
-    display: flex;
-    flex-direction: column;
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+  }
+
+  .dropdown-content b {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
   }
   
+  .dropdown-content a:hover {background-color: #f1f1f1;}
