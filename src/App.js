@@ -12,6 +12,7 @@ import Main from "./components/Main";
 import ForgetPassword from "./components/ForgetPassword";
 import { ToastContainer } from "react-toastify";
 import NewPassword from "./components/NewPassword";
+import ViewSearchProfile from "./components/ViewSearchProfile";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route exact path="/events" element={<Events />} />
         <Route exact path="/feedback" element={<Feedback />} />
         <Route exact path="/view-profile" element={<ViewProfile />} />
+        <Route exact path="/view-search-profile" element={<ViewSearchProfile />} />
         <Route exact path="/search-profile" element={<SearchProfile />} />
         <Route exact path="/message" element={<Message />} />
         <Route exact path="/notification" element={<Notidfication />} />

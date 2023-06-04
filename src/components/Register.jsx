@@ -183,7 +183,7 @@ export default function Register() {
         dob: user.dob,
         city:user.city,
         state:user.state,
-        country:user.country,
+        nation:user.country,
         profilepic: user.profilepic,
         phone: user.phone,
         email: user.email,

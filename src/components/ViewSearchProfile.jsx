@@ -3,86 +3,116 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
-import EditProfileModal from "./EditProfileModal";
-import EditExperienceModal from "./EditExperienceModal";
-import EditEducationModal from "./EditEducationModal";
-import ChangePasswordModal from "./ChangePasswordModal";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export default function ViewProfile() {
+export default function ViewSearchProfile() {
+  const location = useLocation();
+  useEffect(() => {
+    setUserID(location.state.id);
+  }, []);
+  const nav=useNavigate();
   const [user, setUser] = useState({});
   const [language, setLanguage] = useState([]);
   const [skills, setSkills] = useState([]);
   const [education, setEducation] = useState([]);
   const [contactInfo, setContactInfo] = useState(false);
-  const [showModal1, setShowModal1] = useState(false);
-  const [showModal2, setShowModal2] = useState(false);
-  const [showModal3, setShowModal3] = useState(false);
-  const [showModal4, setShowModal4] = useState(false);
   const [experience, setExperience] = useState([]);
-  const closeModal1 = () => setShowModal1(false);
-  const closeModal2 = () => setShowModal2(false);
-  const closeModal3 = () => setShowModal3(false);
-  const closeModal4 = () => setShowModal4(false);
-  const [modal, setModal] = useState("");
-  const [editmenu, setEditMenu] = useState(false);
+  const myID = localStorage.getItem("AlmaPlus_Id");
+  const [userID, setUserID] = useState("");
+
   const getUser = () => {
-    const userID = localStorage.getItem("AlmaPlus_Id");
-    axios({
-      method: "get",
-      url: `${WEB_URL}/api/searchUserById/${userID}`,
-    })
-      .then((Response) => {
-        // console.log(Response.data.data[0]);
-        setLanguage(JSON.parse(Response.data.data[0].languages));
-        setUser(Response.data.data[0]);
-        setSkills(JSON.parse(Response.data.data[0].skills));
+    if (userID !== "") {
+      axios({
+        method: "get",
+        url: `${WEB_URL}/api/searchUserById/${userID}`,
       })
-      .catch((error) => {
-        toast.error("Something Went Wrong");
-      });
+        .then((Response) => {
+          // console.log(Response.data.data[0]);
+          setLanguage(JSON.parse(Response.data.data[0].languages));
+          setUser(Response.data.data[0]);
+          setSkills(JSON.parse(Response.data.data[0].skills));
+        })
+        .catch((error) => {
+          toast.error("Something Went Wrong");
+        });
+    }
   };
 
   const getEducation = () => {
-    const userID = localStorage.getItem("AlmaPlus_Id");
-    // console.log(userID);
-    axios({
-      method: "post",
-      url: `${WEB_URL}/api/getEducation`,
-      data: {
-        userid: userID,
-      },
-    })
-      .then((Response) => {
-        console.log(Response.data.data);
-        setEducation(Response.data.data);
+    if (userID !== "") {
+      axios({
+        method: "post",
+        url: `${WEB_URL}/api/getEducation`,
+        data: {
+          userid: userID,
+        },
       })
-      .catch((Error) => {
-        console.log(Error);
-      });
+        .then((Response) => {
+          //   console.log(Response.data.data);
+          setEducation(Response.data.data);
+        })
+        .catch((Error) => {
+          console.log(Error);
+        });
+    }
   };
 
   const getExperience = () => {
-    const userID = localStorage.getItem("AlmaPlus_Id");
-    // console.log(userID);
-    axios({
-      method: "post",
-      url: `${WEB_URL}/api/getExperience`,
-      data: {
-        userid: userID,
-      },
-    })
-      .then((Response) => {
-        // console.log(Response.data.data);
-        setExperience(Response.data.data);
+    if (userID !== "") {
+      axios({
+        method: "post",
+        url: `${WEB_URL}/api/getExperience`,
+        data: {
+          userid: userID,
+        },
       })
-      .catch((Error) => {
-        console.log(Error);
-      });
+        .then((Response) => {
+          // console.log(Response.data.data);
+          setExperience(Response.data.data);
+        })
+        .catch((Error) => {
+          console.log(Error);
+        });
+    }
   };
 
+  const handleFollow = () => {
+    axios({
+        url:`${WEB_URL}/api/follow/${userID}`,
+        data:{
+            userId:myID
+        },
+        method:"put"
+    }).then((Response)=>{
+        // console.log(Response);
+        toast(Response.data);
+        getUser();
+        if(!user.followings.includes(myID.toString())){
+            handleConversation();
+        }
+    }).catch((error)=>{
+        console.log(error);
+    })
+  };
+
+  const handleConversation=()=>{
+    axios({
+        url:`${WEB_URL}/api/newConversation`,
+        data:{
+            senderId:myID,
+            receiverId:userID
+        },
+        method:"post"
+    }).then((Response)=>{
+        // console.log(Response);
+    }).catch((error)=>{
+        console.log(error.response.data);
+    })
+  }
+
   const formatDate = (date) => {
-    if(date==""||date==null){
-      return 'Present';
+    if (date == "" || date == null) {
+      return "Present";
     }
     var year = date.split("-")[0];
     var month = date.split("-")[1];
@@ -119,7 +149,7 @@ export default function ViewProfile() {
     getUser();
     getEducation();
     getExperience();
-  }, []);
+  }, [userID]);
 
   return (
     <>
@@ -138,9 +168,10 @@ export default function ViewProfile() {
                 <h1>
                   {user.fname} {user.lname}
                 </h1>
-                <p>{user.institute&&user.institute}</p>
+                <p>{user.institute && user.institute}</p>
                 <p>
-                  {user.city&&user.city} {user.state&&user.state} {user.nation ? `, ${user.nation} `:null}
+                  {user.city && user.city} {user.state && user.state}{" "}
+                  {user.nation ? `, ${user.nation} ` : null}
                   <a
                     onClick={() => {
                       setContactInfo(!contactInfo);
@@ -171,58 +202,15 @@ export default function ViewProfile() {
                   ) : null}
                 </div>
               </div>
-
-              <div className="edit-icon">
-                <i
-                  class="fa-solid fa-pencil"
-                  onClick={() => setShowModal1(true)}
-                ></i>
-                <div class="dropdown" style={{ marginLeft: "6px" }}>
-                  <i
-                    class="fa-solid fa-ellipsis-vertical dropbtn"
-                    onClick={() => {
-                      setEditMenu(!editmenu);
-                    }}
-                    style={{ padding: "0 10px", cursor: "pointer" }}
-                  ></i>
-                  <div
-                    class="dropdown-content"
-                    style={{ display: `${editmenu ? "block" : "none"}` }}
-                  >
-                    <b onClick={() => setEditMenu(!editmenu)}>Add Details</b>
-                    <hr />
-                    <a
-                      onClick={() => {
-                        setShowModal1(true);
-                        setEditMenu(!editmenu);
-                      }}
-                    >
-                      Profile
-                    </a>
-                    <a
-                     onClick={() => {
-                      setModal("Add");
-                      setShowModal3(true);
-                      setEditMenu(!editmenu);
-                    }}
-                    >Education</a>
-                    <a
-                      onClick={() => {
-                        setModal("Add");
-                        setShowModal2(true);
-                        setEditMenu(!editmenu);
-                      }}
-                    >
-                      Experience
-                    </a>
-                    <a
-                      onClick={()=>{
-                        setShowModal4(true);
-                        setEditMenu(!editmenu);
-                      }}
-                    >Change Password</a>
-                  </div>
-                </div>
+              <div>
+                
+                  {user.followers && user.followers.includes(myID.toString())
+                    ? <button className="view-profile-button1">Followed</button>
+                    : <button className="view-profile-button1" onClick={handleFollow}>Follow</button>}
+                
+                {user.followers && user.followers.includes(myID.toString()) ? (
+                  <button className="view-profile-button2" onClick={()=>{nav('/message',{state:user})}}>Message</button>
+                ) : null}
               </div>
             </div>
           </div>
@@ -244,23 +232,6 @@ export default function ViewProfile() {
                 }}
               >
                 <h2>Experience</h2>
-                <div className="edit-icon">
-                  <i
-                    class="fa-solid fa-plus"
-                    style={{ marginRight: "10px" }}
-                    onClick={() => {
-                      setModal("Add");
-                      setShowModal2(true);
-                    }}
-                  ></i>
-                  <i
-                    class="fa-solid fa-pencil"
-                    onClick={() => {
-                      setModal("Edit");
-                      setShowModal2(true);
-                    }}
-                  ></i>
-                </div>
               </div>
               {experience.map((elem) => (
                 <div className="profile-desc-row">
@@ -271,7 +242,13 @@ export default function ViewProfile() {
                     <b>
                       {formatDate(elem.joindate)} - {formatDate(elem.enddate)}
                     </b>
-                   {elem.description !==""? <p><strong>Description :</strong> {elem.description}</p>:""}
+                    {elem.description !== "" ? (
+                      <p>
+                        <strong>Description :</strong> {elem.description}
+                      </p>
+                    ) : (
+                      ""
+                    )}
                     <hr />
                   </div>
                 </div>
@@ -289,23 +266,6 @@ export default function ViewProfile() {
                 }}
               >
                 <h2>Education</h2>
-                <div className="edit-icon">
-                  <i
-                    class="fa-solid fa-plus"
-                    style={{ marginRight: "10px" }}
-                    onClick={() => {
-                      setModal("Add");
-                      setShowModal3(true);
-                    }}
-                  ></i>
-                  <i
-                    class="fa-solid fa-pencil"
-                    onClick={() => {
-                      setModal("Edit");
-                      setShowModal3(true);
-                    }}
-                  ></i>
-                </div>
               </div>
               {education.map((elem) => (
                 <div className="profile-desc-row">
@@ -378,34 +338,6 @@ export default function ViewProfile() {
           </div>
         </div>
       </div>
-      {showModal1 && (
-        <EditProfileModal
-          closeModal={closeModal1}
-          user={user}
-          getUser={getUser}
-        />
-      )}
-      {showModal2 && (
-        <EditExperienceModal
-          closeModal={closeModal2}
-          experience={experience}
-          getExperience={getExperience}
-          modal={modal}
-        />
-      )}
-      {showModal3 && (
-        <EditEducationModal
-          closeModal={closeModal3}
-          education={education}
-          getEducation={getEducation}
-          modal={modal}
-        />
-      )}
-      {showModal4 && (
-        <ChangePasswordModal
-          closeModal={closeModal4}
-        />
-      )}
     </>
   );
 }

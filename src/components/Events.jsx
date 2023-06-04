@@ -5,9 +5,13 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { WEB_URL } from '../baseURL';
 import { toast } from 'react-toastify';
+import EventModal from './EventModal';
 
 export default function Events() {
     const [events,setEvents]=useState([]);
+    const [modal,setModal]=useState(false);
+    const closeModal=()=>setModal(false);
+    const [event,setEvent]=useState({});
 
     const getEvents=()=>{
         axios({
@@ -63,7 +67,7 @@ export default function Events() {
                             <li><i className="fa-regular fa-clock" style={{color: "#919090"}}></i><span>{elem.date.split("T")[1].split(".")[0]}</span></li>
                             <li><i className="fa-solid fa-location-dot" style={{color: "#919090"}}></i><span>{elem.venue}</span></li>
                         </ul>
-                        <a href="#">View More</a>
+                        <a onClick={()=>{setModal(true);setEvent(elem)}}>View More</a>
                     </div>
                 </div> 
                 )}    
@@ -73,6 +77,7 @@ export default function Events() {
 
         </div>
     </div>
+    {modal&&<EventModal closeModal={closeModal} event={event}/>}
     </>
   )
 }

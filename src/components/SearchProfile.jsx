@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import Navbar from "./Navbar";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchProfile() {
   const [name, setName] = useState("");
   const [users, setUsers] = useState([]);
+  const nav=useNavigate();
 
   const handleSearch = (e) => {
     setName(e.target.value);
@@ -17,7 +19,7 @@ export default function SearchProfile() {
       },
     })
       .then((Response) => {
-        console.log(Response.data.data);
+        // console.log(Response.data.data);
         setUsers(Response.data.data);
       })
       .catch((error) => {
@@ -106,7 +108,7 @@ export default function SearchProfile() {
                       </li>
                     </ul>
                   </div>
-                  <button class="btn-more">View Profile</button>
+                  <button class="btn-more" onClick={()=>nav('/view-search-profile',{state:{id:elem._id}})}>View Profile</button>
                 </div>
               </div>
             ))}

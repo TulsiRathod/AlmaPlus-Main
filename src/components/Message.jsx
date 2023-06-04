@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, useRevalidator } from 'react-router-dom'
+import { Link, useLocation, useRevalidator } from 'react-router-dom'
 import ChatUser from './ChatUser'
 import ChatMessage from './ChatMessage'
 import axios from 'axios';
@@ -18,8 +18,7 @@ export default function Message() {
     const socket = useRef();
     const [receiverId, setReceiverId] = useState("");
     const [arrivalMessage, setArrivalMessage] = useState(null);
-
-    // const scrollRef = useRef();
+    const location=useLocation();
 
     useEffect(() => {
         socket.current = io("ws://localhost:8900");
@@ -30,20 +29,14 @@ export default function Message() {
                 createdAt: Date.now()
             })
         })
+        socket.current.emit("addUser", userid);
+        getConversation();
+        getUser();
     }, []);
 
     useEffect(() => {
         arrivalMessage && arrivalMessage.sender === receiverId && setMessages((prev) => [...prev, arrivalMessage]);
     }, [arrivalMessage, receiverId]);
-
-    useEffect(() => {
-        socket.current.emit("addUser", userid);
-        socket.current.on("getUsers", users => {
-            console.log(users);
-        })
-        getConversation();
-        getUser();
-    }, [userid]);
 
     const getConversation = () => {
         axios({
@@ -71,7 +64,6 @@ export default function Message() {
             })
         }
     }
-
 
     useEffect(() => {
         getMessages();
@@ -116,10 +108,6 @@ export default function Message() {
             });
         }
     }
-
-    // useEffect(() => {
-    //     scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
-    // }, [messages])
 
     return (
         <>
