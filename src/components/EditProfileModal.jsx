@@ -123,7 +123,7 @@ const EditProfileModal = ({ closeModal, user, getUser }) => {
       isValid = false;
       errors["phone_err"] = "Please Enter Phone Number";
     }
-    if (!input["country"]) {
+    if (!input["nation"]) {
       isValid = false;
       errors["country_err"] = "Please Enter country";
     }
@@ -159,7 +159,7 @@ const EditProfileModal = ({ closeModal, user, getUser }) => {
           dob: dob,
           city: userData.city,
           state: userData.state,
-          nation: userData.country,
+          nation: userData.nation,
           phone: userData.phone,
           email: userData.email,
           github: userData.github,
@@ -317,11 +317,11 @@ const EditProfileModal = ({ closeModal, user, getUser }) => {
             styles={colorStyle}
             className="select"
           ></Select>
-          <span>Country</span>
+          <span>Nation</span>
           <input
             type="text"
-            name="country"
-            placeholder="Country"
+            name="Nation"
+            placeholder="Nation"
             value={userData.nation}
             onChange={handleChange}
           />

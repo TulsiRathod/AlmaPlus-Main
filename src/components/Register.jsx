@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
@@ -246,7 +245,7 @@ export default function Register() {
 
   return (
     <>
-      <Navbar />
+      
       <div className="form-fields-container">
         <div className="left-container">
           <div className="left-container-content">

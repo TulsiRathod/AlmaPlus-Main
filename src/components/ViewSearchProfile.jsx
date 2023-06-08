@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "./Navbar";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function ViewSearchProfile() {
+export default function ViewSearchProfile({socket}) {
   const location = useLocation();
   useEffect(() => {
     setUserID(location.state.id);
   }, []);
-  const nav=useNavigate();
+  const nav = useNavigate();
   const [user, setUser] = useState({});
   const [language, setLanguage] = useState([]);
   const [skills, setSkills] = useState([]);
@@ -77,38 +76,97 @@ export default function ViewSearchProfile() {
   };
 
   const handleFollow = () => {
+      socket.emit("sendNotification", {
+        receiverid: userID ,
+        title:"New Follower",
+        msg:`${user.fname} ${user.lname} Started Following You`,
+      });
     axios({
-        url:`${WEB_URL}/api/follow/${userID}`,
-        data:{
-            userId:myID
-        },
-        method:"put"
-    }).then((Response)=>{
-        // console.log(Response);
+      url: `${WEB_URL}/api/follow/${userID}`,
+      data: {
+        userId: myID,
+      },
+      method: "put",
+    })
+      .then((Response) => {
         toast(Response.data);
         getUser();
-        if(!user.followings.includes(myID.toString())){
-            handleConversation();
+        if (!user.followings.includes(myID.toString())) {
+          handleConversation();
         }
-    }).catch((error)=>{
+        handleNotification(userID);
+      })
+      .catch((error) => {
         console.log(error);
-    })
+      });
   };
 
-  const handleConversation=()=>{
-    axios({
-        url:`${WEB_URL}/api/newConversation`,
+  const handleNotification = (userID) =>{
+      axios({
+        url:`${WEB_URL}/api/addNotification`,
+        method:"post",
         data:{
-            senderId:myID,
-            receiverId:userID
-        },
-        method:"post"
-    }).then((Response)=>{
-        // console.log(Response);
-    }).catch((error)=>{
-        console.log(error.response.data);
-    })
+          userid:userID,
+          msg:`${user.fname} ${user.lname} Started Following You`,
+          image:user.profilepic,
+          title:"New Follwer",
+          date:new Date(),
+        }
+      }).then((response)=>{
+        console.log(response);
+      }).catch((error)=>{
+        console.log(error);
+      })
   }
+
+  const handleUnfollow = () => {
+    if (window.confirm("Do you want to Unfollow?") == true) {
+      axios({
+        url: `${WEB_URL}/api/unfollow/${userID}`,
+        data: {
+          userId: myID,
+        },
+        method: "put",
+      })
+        .then((Response) => {
+          // console.log(Response);
+          toast(Response.data);
+          getUser();
+          handleConversation();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  const handleConversation = () => {
+    axios({
+      url: `${WEB_URL}/api/searchConversations`,
+      method: "post",
+      data: {
+        person1: userID,
+        person2: myID,
+      },
+    }).then((Response) => {
+      if (Response.data.data.length <= 0) {
+        axios({
+          url: `${WEB_URL}/api/newConversation`,
+          data: {
+            senderId: myID,
+            receiverId: userID,
+          },
+          method: "post",
+        })
+          .then((Response) => {
+            // console.log(Response);
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      }
+    });
+  };
 
   const formatDate = (date) => {
     if (date == "" || date == null) {
@@ -153,7 +211,6 @@ export default function ViewSearchProfile() {
 
   return (
     <>
-      <Navbar />
       <div className="container">
         <div className="profile-main">
           <div className="profile-container">
@@ -203,13 +260,31 @@ export default function ViewSearchProfile() {
                 </div>
               </div>
               <div>
-                
-                  {user.followers && user.followers.includes(myID.toString())
-                    ? <button className="view-profile-button1">Followed</button>
-                    : <button className="view-profile-button1" onClick={handleFollow}>Follow</button>}
-                
                 {user.followers && user.followers.includes(myID.toString()) ? (
-                  <button className="view-profile-button2" onClick={()=>{nav('/message',{state:user})}}>Message</button>
+                  <button
+                    className="view-profile-button1"
+                    onClick={handleUnfollow}
+                  >
+                    Followed
+                  </button>
+                ) : (
+                  <button
+                    className="view-profile-button1"
+                    onClick={handleFollow}
+                  >
+                    Follow
+                  </button>
+                )}
+
+                {user.followers && user.followers.includes(myID.toString()) ? (
+                  <button
+                    className="view-profile-button2"
+                    onClick={() => {
+                      nav("/message", { state: user });
+                    }}
+                  >
+                    Message
+                  </button>
                 ) : null}
               </div>
             </div>

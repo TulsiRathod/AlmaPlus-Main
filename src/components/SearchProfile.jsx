@@ -1,16 +1,20 @@
-import React, { useState } from "react";
-import Navbar from "./Navbar";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { useNavigate } from "react-router-dom";
+import FilterModal from "./FilterModal";
 
 export default function SearchProfile() {
   const [name, setName] = useState("");
   const [users, setUsers] = useState([]);
-  const nav=useNavigate();
+  const [showUsers, setShowUsers] = useState([]);
+  const nav = useNavigate();
+  const [modal, setModal] = useState(false);
+  const closeModal = () => setModal(false);
+  const [add, setAdd] = useState("");
+  const [skill, setSkill] = useState("");
 
-  const handleSearch = (e) => {
-    setName(e.target.value);
+  useEffect(() => {
     axios({
       url: `${WEB_URL}/api/searchUser`,
       method: "post",
@@ -19,17 +23,31 @@ export default function SearchProfile() {
       },
     })
       .then((Response) => {
-        // console.log(Response.data.data);
+        console.log(name);
+        console.log(Response.data.data);
         setUsers(Response.data.data);
+        setShowUsers(Response.data.data);
       })
       .catch((error) => {
         console.log(error);
       });
+  }, [name]);
+
+  const handleFilter = () => {
+    closeModal();
+    setShowUsers(
+      users.filter((elem) => {
+        const cityMatch =
+          elem.city && elem.city.toLowerCase().includes(add.toLowerCase());
+        const skillsMatch =
+          elem.skills && elem.skills.toLowerCase().includes(add.toLowerCase());
+        return cityMatch || skillsMatch;
+      })
+    );
   };
 
   return (
     <>
-      <Navbar />
       <div class="body1">
         <div className="search-hearder">
           <div class="search-box">
@@ -41,14 +59,25 @@ export default function SearchProfile() {
               type="text"
               placeholder="search"
               value={name}
-              onChange={handleSearch}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <i class="fa-solid fa-filter"></i>
+          <div>
+          <i class="fa-solid fa-filter" onClick={() => setModal(true)}></i>
+          {add || skill?<i
+            class="fa-solid fa-circle"
+            style={{
+              color: "#ff0000",
+              fontSize: "6px",
+              position: "absolute",
+              marginLeft: "2px",
+            }}
+          ></i>:null}
+          </div>
         </div>
-        {users && users.length > 0 ? (
+        {showUsers && showUsers.length > 0 ? (
           <div class="card-wrapper">
-            {users.map((elem) => (
+            {showUsers.map((elem) => (
               <div class="card">
                 <div class="image-content">
                   <span class="overlay"></span>
@@ -108,15 +137,37 @@ export default function SearchProfile() {
                       </li>
                     </ul>
                   </div>
-                  <button class="btn-more" onClick={()=>nav('/view-search-profile',{state:{id:elem._id}})}>View Profile</button>
+                  <button
+                    class="btn-more"
+                    onClick={() =>
+                      nav("/view-search-profile", { state: { id: elem._id } })
+                    }
+                  >
+                    View Profile
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <img src="images/search-bro.png" className="no-search-img" />
+          <>
+            <div className="no-search">
+              <img src="images/search-bro.png" className="no-search-img" />
+              <span>"Connecting You with the Right People"</span>
+            </div>
+          </>
         )}
       </div>
+      {modal && (
+        <FilterModal
+          closeModal={closeModal}
+          add={add}
+          setAdd={setAdd}
+          skill={skill}
+          setSkill={setSkill}
+          handleFilter={handleFilter}
+        />
+      )}
     </>
   );
 }

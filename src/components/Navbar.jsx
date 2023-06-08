@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -13,11 +13,16 @@ import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
 
-export default function Navbar() {
+export default function Navbar({socket}) {
   const [state, setState] = React.useState({
     right: false,
   });
   const [user, setUser] = useState({});
+  const [navbar, setNavbar] = useState(true);
+  const pathname = window.location.pathname;
+  const userid = localStorage.getItem("AlmaPlus_Id");
+  const [mesDot,setMesDot]=useState(false);
+  const [notDot,setNotDot]=useState(false);
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -33,19 +38,21 @@ export default function Navbar() {
   const getUser = () => {
     const userID = localStorage.getItem("AlmaPlus_Id");
     axios({
-      method: 'get',
-      url: `${WEB_URL}/api/searchUserById/${userID}`
-    }).then((Response) => {
-      setUser(Response.data.data[0]);
-    }).catch((error) => {
-      toast.error("Something Went Wrong");
-    });
-  }
+      method: "get",
+      url: `${WEB_URL}/api/searchUserById/${userID}`,
+    })
+      .then((Response) => {
+        setUser(Response.data.data[0]);
+      })
+      .catch((error) => {
+        toast.error("Something Went Wrong");
+      });
+  };
 
   const Logout = () => {
     localStorage.clear();
     nav("/");
-  }
+  };
 
   const list = (anchor) => (
     <Box
@@ -62,7 +69,7 @@ export default function Navbar() {
           padding: "10px",
           alignItems: "center",
           fontSize: "30px",
-          color: "black"
+          color: "black",
         }}
       >
         <i class="fa-solid fa-xmark"></i>
@@ -168,96 +175,142 @@ export default function Navbar() {
   );
 
   const nav = useNavigate();
-  const [menus, setMenus] = useState(true);
+
   useEffect(() => {
-    const pathname = window.location.pathname;
-    if (pathname === "/register") {
-      setMenus(false);
+    if (
+      pathname === "/register" ||
+      pathname === "/login" ||
+      pathname === "/" ||
+      pathname === "/forget-password" ||
+      pathname === "/new-password"
+    ) {
+      setNavbar(false);
     } else {
+      setNavbar(true);
       getUser();
     }
-
-  }, []);
+    socket.emit("addUser", localStorage.getItem("AlmaPlus_Id"));
+    // socket.on("getUsers",data=>{
+    //   console.log(data);
+    // })
+      socket.on("getMessage", (data) => {
+        setMesDot(true);if(pathname==="/message"){
+        setMesDot(false);
+      }});
+      socket.on("getNotification", (data) => {
+        setNotDot(true);
+        if(pathname==="/notification"){
+          setNotDot(false);
+        }
+      });
+      
+      
+  }, [pathname]);
 
   return (
     <>
-      <nav class="navbar">
+      <nav class="navbar" style={{ display: navbar ? "flex" : "none" }}>
         <div class="navbar-left">
           <Link to="/" class="logo">
             <img src="/images/Logo.jpg" />
           </Link>
         </div>
-        {menus ? (
-          <div class="navbar-center">
-            <ul>
-              <Link to="/home">
-                <li>
-                  <i class="fa-solid fa-house"></i>
-                  <span>Home</span>
-                </li>
-              </Link>
-              <Link to="/search-profile">
-                <li>
+        <div class="navbar-center">
+          <ul>
+            <Link to="/home">
+              <li>
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+              </li>
+            </Link>
+            <Link to="/search-profile">
+              <li>
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <span>Search</span>
-                </li>
-              </Link>
-              <Link to="/events">
-                <li>
-                  <i class="fa-solid fa-calendar"></i>
-                  <span>Events</span>
-                </li>
-              </Link>
-              <Link to="/message">
-                <li>
-                  <i class="fa-solid fa-message"></i>
-                  <span>Message</span>
-                </li>
-              </Link>
-              <Link to="/notification">
-                <li>
-                  <i class="fa-solid fa-bell"></i>
-                  <span>Notification</span>
-                </li>
-              </Link>
-            </ul>
-          </div>
-        ) : (
-          ""
-        )}
-
-        {menus ?
-          <div class="navbar-right">
-            <div className="nav-profile" onClick={() => {
+              </li>
+            </Link>
+            <Link to="/events">
+              <li>
+                <i class="fa-solid fa-calendar"></i>
+                <span>Events</span>
+              </li>
+            </Link>
+            <Link to="/message">
+              <li onClick={()=>{setMesDot(false)}}>
+                {mesDot?<i
+                  class="fa-solid fa-circle"
+                  style={{
+                    color: "#ff0000",
+                    fontSize: "6px",
+                    position: "absolute",
+                    marginLeft: "20px",
+                  }}
+                ></i>:null}
+                <i class="fa-solid fa-message"></i>
+                <span>Message</span>
+              </li>
+            </Link>
+            <Link to="/notification">
+              <li onClick={()=>{setNotDot(false)}}>
+                {notDot?<i
+                  class="fa-solid fa-circle"
+                  style={{
+                    color: "#ff0000",
+                    fontSize: "6px",
+                    position: "absolute",
+                    marginLeft: "16px",
+                  }}
+                ></i>:null}
+                <i class="fa-solid fa-bell"></i>
+                <span>Notification</span>
+              </li>
+            </Link>
+          </ul>
+        </div>
+        <div class="navbar-right">
+          <div
+            className="nav-profile"
+            onClick={() => {
               nav("/view-profile");
-            }}>
-              {user.profilepic ? <img src={`${WEB_URL}${user.profilepic}`} alt="" class="nav-profile-img" /> : <img src="images/profile1.png" class="nav-profile-img"></img>}
-              <div class="user-profile">
-                {user.fname ? <span>{user.fname} {user.lname}</span> : <span>USER</span>}
-              </div>
+            }}
+          >
+            {user.profilepic ? (
+              <img
+                src={`${WEB_URL}${user.profilepic}`}
+                alt=""
+                class="nav-profile-img"
+              />
+            ) : (
+              <img src="images/profile1.png" class="nav-profile-img"></img>
+            )}
+            <div class="user-profile">
+              {user.fname ? (
+                <span>
+                  {user.fname} {user.lname}
+                </span>
+              ) : (
+                <span>USER</span>
+              )}
             </div>
+          </div>
 
-            <div className="nav-search-bar">
-              <i class="fa-solid fa-magnifying-glass" onClick={() => { nav('/search-profile') }}></i>
-              <React.Fragment>
-                <Button onClick={toggleDrawer("right", true)}>
-                  <i class="fa-solid fa-bars"></i>
-                </Button>
-                <SwipeableDrawer
-                  anchor="right"
-                  open={state["right"]}
-                  onClose={toggleDrawer("right", false)}
-                  onOpen={toggleDrawer("right", true)}
-                >
-                  {list("right")}
-                </SwipeableDrawer>
-              </React.Fragment>
-            </div>
-            <div>
-            </div>
-          </div> : ""
-        }
-
+          <div className="nav-search-bar">
+            <React.Fragment>
+              <Button onClick={toggleDrawer("right", true)}>
+                <i class="fa-solid fa-bars"></i>
+              </Button>
+              <SwipeableDrawer
+                anchor="right"
+                open={state["right"]}
+                onClose={toggleDrawer("right", false)}
+                onOpen={toggleDrawer("right", true)}
+              >
+                {list("right")}
+              </SwipeableDrawer>
+            </React.Fragment>
+          </div>
+          <div></div>
+        </div>
       </nav>
     </>
   );

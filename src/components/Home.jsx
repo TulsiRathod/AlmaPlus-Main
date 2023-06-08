@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
-import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
-import { io } from "socket.io-client";
 
-export default function Home() {
+export default function Home({socket}) {
   const settings = {
     dots: true,
     speed: 500,
@@ -19,32 +17,16 @@ export default function Home() {
   const [post, setPost] = useState([]);
   const [description, setDescription] = useState("");
   const [events, setEvents] = useState([]);
-  const socket = useRef();
   const [fileList, setFileList] = useState(null);
   const files = fileList ? [...fileList] : [];
   const userid = localStorage.getItem("AlmaPlus_Id");
-  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
-    socket.current = io("ws://localhost:8900");
-    socket.current.on("getNotification", (data) => {
-      setNotification({
-        sender: data.senderid,
-        type: data.type,
-        createdAt: Date.now(),
-      });
-    });
     getUser();
     getPost();
     getEvents();
   }, []);
 
-  useEffect(() => {
-    socket.current.emit("addUser", userid);
-    // socket.current.on("getUsers", users => {
-    //   // console.log(users);
-    // })
-  }, [userid]);
 
   const uploadImg = () => {
     document.getElementById("myFileInput").click();
@@ -120,6 +102,7 @@ export default function Home() {
     })
       .then((Response) => {
         setEvents(Response.data.data);
+        // console.log(Response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -132,11 +115,13 @@ export default function Home() {
   };
 
   const handleLike = async (elem) => {
-    socket.current.emit("sendNotification", {
-      senderid: userid,
-      receiverid: elem.userid,
-      type: 1,
-    });
+    if(userid!==elem.userid){
+      socket.emit("sendNotification", {
+        receiverid: elem.userid,
+        title:"New Like",
+        msg:`${user.name} Liked Your Post`,
+      });
+    }
     await axios({
       method: "put",
       url: `${WEB_URL}/api/like/${elem._id}`,
@@ -144,19 +129,82 @@ export default function Home() {
         userId: userid,
       },
     })
-      .then((response) => {
-        // elem.likes.includes(userid) ?  elem.likes.pop(userid):elem.likes.push(userid);  
+      .then((response) => {  
+        handleNotification(elem, response.data.msg);
         getPost();
-        console.log(elem.likes);
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
+  const handleNotification = (elem, msg) =>{
+    if(userid!==elem.userid){
+      axios({
+        url:`${WEB_URL}/api/addNotification`,
+        method:"post",
+        data:{
+          userid:elem.userid,
+          msg:`${user.fname} ${user.lname} ${msg} your Post`,
+          image:user.profilepic,
+          title:"New Like",
+          date:new Date(),
+        }
+      }).then((response)=>{
+        console.log(response);
+      }).catch((error)=>{
+        console.log(error);
+      })
+    }
+  }
+
+  const formatPostTime=(timestamp)=> {
+    const messageTime = new Date(timestamp);
+    const now = new Date();
+    const timeDiff = Math.abs(now - messageTime);
+    const minutesDiff = Math.floor(timeDiff / 60000);
+    if (minutesDiff < 1) {
+      return "Just now";
+    } else if (minutesDiff < 60) {
+      return `${minutesDiff} minute${minutesDiff === 1 ? "" : "s"} ago`;
+    } else if (messageTime.toDateString() === now.toDateString()) {
+      const options = { hour: "numeric", minute: "numeric" };
+      return `Today at ${messageTime.toLocaleTimeString("en-US", options)}`;
+    } else {
+      const options = { month: "short", day: "numeric", hour: "numeric", minute: "numeric" };
+      return messageTime.toLocaleString("en-US", options);
+    }
+  }
+
+  const formatDate = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const options = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+  
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const formatTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      timeZone: 'Asia/Kolkata'
+    };
+  
+    const formattedTime = date.toLocaleTimeString('en-US', options);
+    return formattedTime.replace(/(\+|-)\d+:\d+/, '');
+  };
+  
+  
+
   return (
     <>
-      <Navbar />
       <div className="home-container">
         <div className="profile-card-main">
           <div className="profile-card">
@@ -285,8 +333,7 @@ export default function Home() {
                             {elem.fname} {elem.lname}
                           </span>
                           <span className="post-description">
-                            {elem.date.split("T")[0]}{" "}
-                            {elem.date.split("T")[1].split(".")[0]}
+                            {formatPostTime(elem.date)}
                           </span>
                         </div>
                       </div>
@@ -365,11 +412,11 @@ export default function Home() {
                     <div className="event-name">{elem.title}</div>
                     <div className="event-date">
                       <i className="fa-solid fa-calendar-days"></i>
-                      {elem.date.split("T")[0]}
+                      {formatDate(elem.date)}
                     </div>
                     <div className="event-time">
                       <i className="fa-regular fa-clock"></i>
-                      {elem.date.split("T")[1].split(".")[0]}
+                      {formatTime(elem.date)}
                     </div>
                   </div>
                 </div>

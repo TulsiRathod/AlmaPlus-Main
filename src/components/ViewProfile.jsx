@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "./Navbar";
 import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
@@ -25,14 +24,13 @@ export default function ViewProfile() {
   const closeModal4 = () => setShowModal4(false);
   const [modal, setModal] = useState("");
   const [editmenu, setEditMenu] = useState(false);
+  const userID = localStorage.getItem("AlmaPlus_Id");
   const getUser = () => {
-    const userID = localStorage.getItem("AlmaPlus_Id");
     axios({
       method: "get",
       url: `${WEB_URL}/api/searchUserById/${userID}`,
     })
       .then((Response) => {
-        // console.log(Response.data.data[0]);
         setLanguage(JSON.parse(Response.data.data[0].languages));
         setUser(Response.data.data[0]);
         setSkills(JSON.parse(Response.data.data[0].skills));
@@ -43,8 +41,6 @@ export default function ViewProfile() {
   };
 
   const getEducation = () => {
-    const userID = localStorage.getItem("AlmaPlus_Id");
-    // console.log(userID);
     axios({
       method: "post",
       url: `${WEB_URL}/api/getEducation`,
@@ -53,7 +49,6 @@ export default function ViewProfile() {
       },
     })
       .then((Response) => {
-        console.log(Response.data.data);
         setEducation(Response.data.data);
       })
       .catch((Error) => {
@@ -62,8 +57,6 @@ export default function ViewProfile() {
   };
 
   const getExperience = () => {
-    const userID = localStorage.getItem("AlmaPlus_Id");
-    // console.log(userID);
     axios({
       method: "post",
       url: `${WEB_URL}/api/getExperience`,
@@ -72,7 +65,6 @@ export default function ViewProfile() {
       },
     })
       .then((Response) => {
-        // console.log(Response.data.data);
         setExperience(Response.data.data);
       })
       .catch((Error) => {
@@ -123,7 +115,6 @@ export default function ViewProfile() {
 
   return (
     <>
-      <Navbar />
       <div className="container">
         <div className="profile-main">
           <div className="profile-container">

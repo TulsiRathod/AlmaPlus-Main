@@ -1,5 +1,4 @@
 import React from 'react'
-import Navbar from './Navbar'
 import { useState } from 'react'
 import axios from 'axios';
 import { WEB_URL } from '../baseURL';
@@ -33,7 +32,6 @@ export default function Feedback() {
     }
   return (
     <>
-    <Navbar/>
       <div className="wrapper">
         <div className="main-container">
             <div className="l-container">
