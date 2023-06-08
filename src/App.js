@@ -17,7 +17,7 @@ import { io } from "socket.io-client";
 import Navbar from "./components/Navbar";
 
 function App() {
-  const socket = io("ws://localhost:8900");
+  const socket = io("ws://20.106.152.112:8900");
   return (
     <>
     <ToastContainer/>
