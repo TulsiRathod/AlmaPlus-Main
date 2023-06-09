@@ -13,6 +13,7 @@ export default function SearchProfile() {
   const closeModal = () => setModal(false);
   const [add, setAdd] = useState("");
   const [skill, setSkill] = useState("");
+  const userID = localStorage.getItem("AlmaPlus_Id");
 
   useEffect(() => {
     axios({
@@ -23,8 +24,6 @@ export default function SearchProfile() {
       },
     })
       .then((Response) => {
-        console.log(name);
-        console.log(Response.data.data);
         setUsers(Response.data.data);
         setShowUsers(Response.data.data);
       })
@@ -139,8 +138,9 @@ export default function SearchProfile() {
                   </div>
                   <button
                     class="btn-more"
-                    onClick={() =>
-                      nav("/view-search-profile", { state: { id: elem._id } })
+                    onClick={() =>{
+                      elem._id===userID?nav("/view-profile"):nav("/view-search-profile", { state: { id: elem._id } })
+                    }
                     }
                   >
                     View Profile

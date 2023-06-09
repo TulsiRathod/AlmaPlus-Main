@@ -25,6 +25,7 @@ export default function ViewProfile() {
   const [modal, setModal] = useState("");
   const [editmenu, setEditMenu] = useState(false);
   const userID = localStorage.getItem("AlmaPlus_Id");
+  
   const getUser = () => {
     axios({
       method: "get",
@@ -119,7 +120,7 @@ export default function ViewProfile() {
         <div className="profile-main">
           <div className="profile-container">
             <div className="profile-cover"></div>
-            <div className="profile-container-inner">
+            <div className="profile-container-inner1">
               <div>
                 <img
                   src={`${WEB_URL}${user.profilepic}`}

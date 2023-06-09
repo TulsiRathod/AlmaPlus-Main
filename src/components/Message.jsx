@@ -20,17 +20,19 @@ export default function Message({ socket }) {
   const location = useLocation();
   const width = window.innerWidth < 1200;
   const msgBoxRef = useRef(null);
+  const [searchName,setSearchName]=useState("");
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
+        time: data.time,
         createdAt: Date.now(),
       });
     });
     if (location.state !== null) {
-      setName(location.state.name);
+      setName(location.state.fname+" "+location.state.lname);
       setReceiverId(location.state._id);
       setProfilepic(location.state.profilepic);
       searchConversation();
@@ -116,6 +118,7 @@ export default function Message({ socket }) {
       senderId: userid,
       receiverId: receiverId,
       text: newMsg,
+      time:new Date()
     });
 
     if (newMsg !== "") {
@@ -178,7 +181,7 @@ export default function Message({ socket }) {
                 className="fa-sharp fa-solid fa-magnifying-glass"
                 style={{ color: "#787878" }}
               ></i>
-              <input type="text" placeholder="search" />
+              <input type="text" placeholder="search" value={searchName} onChange={(e)=>setSearchName(e.target.value)}/>
             </div>
             {conversationID.length > 0 ? (
               <div className="chat-user-list">

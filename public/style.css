@@ -168,6 +168,13 @@ a {
   justify-content: space-between;
 }
 
+.profile-container-inner1 {
+  padding: 16px 4%;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .profile-pic {
   height: 150px;
   width: 150px;
@@ -1351,7 +1358,10 @@ ul.prise-list-merge li.prise_list.selected {
 
 .chat-user {
   display: flex;
-  margin: 0 6px 24px;
+  align-items: center;
+  margin: 2px;
+  padding: 15px;
+  border-top: 1px solid #7e7f81;
 }
 
 .chat-user img {
@@ -1373,7 +1383,8 @@ ul.prise-list-merge li.prise_list.selected {
 }
 
 .chat-user-name {
-  font-size: 16px;
+  font-size: 20px;
+  margin-left: 10px;
 }
 
 .no-chat img {

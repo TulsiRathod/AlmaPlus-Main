@@ -314,8 +314,9 @@ export default function Home({socket}) {
                 {post.map((elem) => (
                   <div className="post">
                     <div className="post-header">
-                      <div className="post-profile">
-                        <div>
+                      <div className="post-profile" >
+                        <div onClick={() =>{
+                      elem.userid===userid?nav("/view-profile"):nav("/view-search-profile", { state: { id: elem.userid } })}}>
                           <img
                             src={
                               elem.profilepic === "" ||
@@ -337,9 +338,9 @@ export default function Home({socket}) {
                           </span>
                         </div>
                       </div>
-                      <div className="post-option">
+                      {/* <div className="post-option">
                         <i className="fa-solid fa-ellipsis-vertical"></i>
-                      </div>
+                      </div> */}
                     </div>
                     <div className="post-message">{elem.description}</div>
                     {elem.photos.length > 0 ? (

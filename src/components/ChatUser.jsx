@@ -29,14 +29,14 @@ function ChatUser({ userid, setCurrentId, setName, setProfilepic, setReceiverId 
         <>
             <div className="chat-user" onClick={() => { setCurrentId(userid._id); setName(user.fname + ' ' + user.lname); setProfilepic(user.profilepic); setReceiverId(user._id) }}>
                 <img src={`${WEB_URL}${user.profilepic}`} alt="" />
-                <div className="chat-user-info">
-                    <div>
-                        <span className="chat-user-name">{user.fname} {user.lname}</span><span className="chat-time">03:23 PM</span>
-                    </div>
-                    <div>
+                {/* <div className="chat-user-info"> */}
+                    {/* <div> */}
+                        <span className="chat-user-name">{user.fname} {user.lname}</span>
+                    {/* </div> */}
+                    {/* <div>
                         <span className="chat-user-msg">Good Morning</span><span className="chat-mark"><i className="fa-solid fa-check"></i></span>
-                    </div>
-                </div>
+                    </div> */}
+                {/* </div> */}
             </div>
         </>
     )
