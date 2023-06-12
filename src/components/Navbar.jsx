@@ -132,6 +132,18 @@ export default function Navbar({socket}) {
           </ListItemButton>
         </ListItem>
         <ListItem
+          key={"helpstudent"}
+          disablePadding
+          onClick={() => {
+            nav("/help-students");
+          }}
+        >
+          <ListItemButton>
+          <i class="fa-solid fa-handshake-angle" style={{ padding: "10px 15px" }}></i>
+            <ListItemText primary={"Help Students"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
           key={"notification"}
           disablePadding
           onClick={() => {

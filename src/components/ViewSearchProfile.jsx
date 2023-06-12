@@ -4,7 +4,7 @@ import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function ViewSearchProfile({socket}) {
+export default function ViewSearchProfile({ socket }) {
   const location = useLocation();
   useEffect(() => {
     setUserID(location.state.id);
@@ -18,6 +18,7 @@ export default function ViewSearchProfile({socket}) {
   const [experience, setExperience] = useState([]);
   const myID = localStorage.getItem("AlmaPlus_Id");
   const [userID, setUserID] = useState("");
+  const [topUsers, setTopUsers] = useState([]);
 
   const getUser = () => {
     if (userID !== "") {
@@ -27,9 +28,9 @@ export default function ViewSearchProfile({socket}) {
       })
         .then((Response) => {
           // console.log(Response.data.data[0]);
-          setLanguage(JSON.parse(Response.data.data[0].languages));
+          Response.data.data[0].languages&&setLanguage(JSON.parse(Response.data.data[0].languages));
           setUser(Response.data.data[0]);
-          setSkills(JSON.parse(Response.data.data[0].skills));
+          Response.data.data[0].skills&&setSkills(JSON.parse(Response.data.data[0].skills));
         })
         .catch((error) => {
           toast.error("Something Went Wrong");
@@ -76,11 +77,11 @@ export default function ViewSearchProfile({socket}) {
   };
 
   const handleFollow = () => {
-      socket.emit("sendNotification", {
-        receiverid: userID ,
-        title:"New Follower",
-        msg:`${user.fname} ${user.lname} Started Following You`,
-      });
+    socket.emit("sendNotification", {
+      receiverid: userID,
+      title: "New Follower",
+      msg: `${user.fname} ${user.lname} Started Following You`,
+    });
     axios({
       url: `${WEB_URL}/api/follow/${userID}`,
       data: {
@@ -101,23 +102,25 @@ export default function ViewSearchProfile({socket}) {
       });
   };
 
-  const handleNotification = (userID) =>{
-      axios({
-        url:`${WEB_URL}/api/addNotification`,
-        method:"post",
-        data:{
-          userid:userID,
-          msg:`${user.fname} ${user.lname} Started Following You`,
-          image:user.profilepic,
-          title:"New Follwer",
-          date:new Date(),
-        }
-      }).then((response)=>{
+  const handleNotification = (userID) => {
+    axios({
+      url: `${WEB_URL}/api/addNotification`,
+      method: "post",
+      data: {
+        userid: userID,
+        msg: `${user.fname} ${user.lname} Started Following You`,
+        image: user.profilepic,
+        title: "New Follwer",
+        date: new Date(),
+      },
+    })
+      .then((response) => {
         console.log(response);
-      }).catch((error)=>{
-        console.log(error);
       })
-  }
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleUnfollow = () => {
     if (window.confirm("Do you want to Unfollow?") == true) {
@@ -168,6 +171,20 @@ export default function ViewSearchProfile({socket}) {
     });
   };
 
+  const getNewUsers = () => {
+    if(user!=={}){
+      axios({
+        url: `${WEB_URL}/api/getTopUsers`,
+        method: "post",
+        data: {
+          institute: user.institute,
+        },
+      }).then((Response) => {
+        setTopUsers(Response.data.data.filter((elem)=>elem._id!==myID&&elem._id!==user._id));
+      });
+    }
+  };
+
   const formatDate = (date) => {
     if (date == "" || date == null) {
       return "Present";
@@ -209,6 +226,10 @@ export default function ViewSearchProfile({socket}) {
     getExperience();
   }, [userID]);
 
+  useEffect(()=>{
+    getNewUsers();
+  },[user]);
+
   return (
     <>
       <div className="container">
@@ -217,11 +238,13 @@ export default function ViewSearchProfile({socket}) {
             <div className="profile-cover"></div>
             <div className="profile-container-inner">
               <div>
-                <img
+              {user.profilepic!==""?<img
                   src={`${WEB_URL}${user.profilepic}`}
                   alt=""
                   className="profile-pic"
                 />
+                :<img src="images/profile1.png" className="profile-pic"/>
+                }
                 <h1>
                   {user.fname} {user.lname}
                 </h1>
@@ -378,39 +401,24 @@ export default function ViewSearchProfile({socket}) {
           ) : null}
         </div>
         <div className="profile-sidebar">
-          <div className="sidebar-people">
-            <h3>People you may know</h3>
-
-            <div className="sidebar-people-row">
-              <img src="images/user2.jpg" alt="" />
-              <div>
-                <h2>Aryan Patel</h2>
-                <p>Head of Marketing at Alibaba</p>
-                <a href="#">Connect</a>
-              </div>
+          {topUsers.length > 0 ? (
+            <div className="sidebar-people">
+              <h3>People you may know</h3>
+              {topUsers.map((elem) => (
+                <>
+                  <div className="sidebar-people-row">
+                    <img src={`${WEB_URL}${elem.profilepic}`} alt="" />
+                    <div>
+                      <h2>{elem.fname} {elem.lname}</h2>
+                      <p>{elem.city} {elem.state}, {elem.nation} </p>
+                      <a onClick={()=>myID===elem._id?nav("/view-profile"):setUserID(elem._id)}>View Profile</a>
+                    </div>
+                  </div>
+                  <hr />
+                </>
+              ))}
             </div>
-            <hr />
-
-            <div className="sidebar-people-row">
-              <img src="images/user3.png" alt="" />
-              <div>
-                <h2>Drashti Dankhara</h2>
-                <p>Web Developer at Microsoft</p>
-                <a href="#">Connect</a>
-              </div>
-            </div>
-            <hr />
-
-            <div className="sidebar-people-row">
-              <img src="images/user1.png" alt="" />
-              <div>
-                <h2>Mansi Patel</h2>
-                <p>Designer at Amazon</p>
-                <a href="#">Connect</a>
-              </div>
-            </div>
-            <hr />
-          </div>
+          ) : null}
         </div>
       </div>
     </>

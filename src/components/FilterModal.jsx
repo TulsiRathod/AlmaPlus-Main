@@ -1,6 +1,6 @@
 import React from 'react'
 
-const FilterModal = ({closeModal,add, setAdd, skill, setSkill,handleFilter}) => {
+const FilterModal = ({closeModal,add, setAdd, skill, setSkill, handleFilter}) => {
       const handleCancel=()=>{
         setAdd("");
         setSkill("");

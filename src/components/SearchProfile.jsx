@@ -34,15 +34,12 @@ export default function SearchProfile() {
 
   const handleFilter = () => {
     closeModal();
-    setShowUsers(
-      users.filter((elem) => {
-        const cityMatch =
-          elem.city && elem.city.toLowerCase().includes(add.toLowerCase());
-        const skillsMatch =
-          elem.skills && elem.skills.toLowerCase().includes(add.toLowerCase());
-        return cityMatch || skillsMatch;
-      })
-    );
+      setShowUsers(users.filter((elem) => {
+        const cityMatch =  elem.city&&elem.city.toLowerCase().includes(add.toLowerCase())
+        const skillreg=new RegExp(skill,"i");
+        const skillsMatch = elem.skills&&skillreg.test(elem.skills);
+        return cityMatch&&skillsMatch;
+      }));
   };
 
   return (

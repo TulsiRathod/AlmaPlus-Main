@@ -22,7 +22,7 @@ export default function Events() {
       .then((Response) => {
         setEvents(Response.data.data);
         setShowEvent(Response.data.data);
-        console.log(Response.data.data);
+        setType("All");
       })
       .catch((error) => {
         toast.error("Something Went Wrong");
@@ -150,7 +150,7 @@ export default function Events() {
           ) : null}
         </div>
       </div>
-      {modal && <EventModal closeModal={closeModal} event={event} />}
+      {modal && <EventModal closeModal={closeModal} event={event} getEvents={getEvents}/>}
     </>
   );
 }

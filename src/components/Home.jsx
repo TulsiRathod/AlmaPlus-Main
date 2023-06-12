@@ -5,7 +5,7 @@ import axios from "axios";
 import { WEB_URL } from "../baseURL";
 import { toast } from "react-toastify";
 
-export default function Home({socket}) {
+export default function Home({ socket }) {
   const settings = {
     dots: true,
     speed: 500,
@@ -17,6 +17,7 @@ export default function Home({socket}) {
   const [post, setPost] = useState([]);
   const [description, setDescription] = useState("");
   const [events, setEvents] = useState([]);
+  const [aids, setAids] = useState([]);
   const [fileList, setFileList] = useState(null);
   const files = fileList ? [...fileList] : [];
   const userid = localStorage.getItem("AlmaPlus_Id");
@@ -25,8 +26,8 @@ export default function Home({socket}) {
     getUser();
     getPost();
     getEvents();
+    getAids();
   }, []);
-
 
   const uploadImg = () => {
     document.getElementById("myFileInput").click();
@@ -48,6 +49,19 @@ export default function Home({socket}) {
         console.log(error);
       });
   };
+
+  const getAids= ()=>{
+    axios({
+      url:`${WEB_URL}/api/getFinancialAid`,
+      method:"get",
+    })
+    .then((Response)=>{
+      setAids(Response.data.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
 
   const getPost = () => {
     axios({
@@ -87,7 +101,7 @@ export default function Home({socket}) {
       .then((Response) => {
         toast.success("Post Uploaded!!");
         setFileList(null);
-        setDescription("");
+        setDescription(""); 
         getPost();
       })
       .catch((error) => {
@@ -115,11 +129,11 @@ export default function Home({socket}) {
   };
 
   const handleLike = async (elem) => {
-    if(userid!==elem.userid){
+    if (userid !== elem.userid) {
       socket.emit("sendNotification", {
         receiverid: elem.userid,
-        title:"New Like",
-        msg:`${user.name} Liked Your Post`,
+        title: "New Like",
+        msg: `${user.name} Liked Your Post`,
       });
     }
     await axios({
@@ -129,7 +143,7 @@ export default function Home({socket}) {
         userId: userid,
       },
     })
-      .then((response) => {  
+      .then((response) => {
         handleNotification(elem, response.data.msg);
         getPost();
       })
@@ -138,27 +152,29 @@ export default function Home({socket}) {
       });
   };
 
-  const handleNotification = (elem, msg) =>{
-    if(userid!==elem.userid){
+  const handleNotification = (elem, msg) => {
+    if (userid !== elem.userid) {
       axios({
-        url:`${WEB_URL}/api/addNotification`,
-        method:"post",
-        data:{
-          userid:elem.userid,
-          msg:`${user.fname} ${user.lname} ${msg} your Post`,
-          image:user.profilepic,
-          title:"New Like",
-          date:new Date(),
-        }
-      }).then((response)=>{
-        console.log(response);
-      }).catch((error)=>{
-        console.log(error);
+        url: `${WEB_URL}/api/addNotification`,
+        method: "post",
+        data: {
+          userid: elem.userid,
+          msg: `${user.fname} ${user.lname} ${msg} your Post`,
+          image: user.profilepic,
+          title: "New Like",
+          date: new Date(),
+        },
       })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-  }
+  };
 
-  const formatPostTime=(timestamp)=> {
+  const formatPostTime = (timestamp) => {
     const messageTime = new Date(timestamp);
     const now = new Date();
     const timeDiff = Math.abs(now - messageTime);
@@ -171,37 +187,49 @@ export default function Home({socket}) {
       const options = { hour: "numeric", minute: "numeric" };
       return `Today at ${messageTime.toLocaleTimeString("en-US", options)}`;
     } else {
-      const options = { month: "short", day: "numeric", hour: "numeric", minute: "numeric" };
+      const options = {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      };
       return messageTime.toLocaleString("en-US", options);
     }
-  }
+  };
 
   const formatDate = (dateTimeString) => {
     const date = new Date(dateTimeString);
     const options = {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+      weekday: "short",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     };
-  
-    return date.toLocaleDateString('en-US', options);
+
+    return date.toLocaleDateString("en-US", options);
   };
 
   const formatTime = (dateTimeString) => {
     const date = new Date(dateTimeString);
     const options = {
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      timeZone: 'Asia/Kolkata'
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      timeZone: "Asia/Kolkata",
     };
-  
-    const formattedTime = date.toLocaleTimeString('en-US', options);
-    return formattedTime.replace(/(\+|-)\d+:\d+/, '');
+
+    const formattedTime = date.toLocaleTimeString("en-US", options);
+    return formattedTime.replace(/(\+|-)\d+:\d+/, "");
   };
-  
-  
+
+  const calWidth=(aid, claimed)=>{
+    const ans=Number(claimed)/Number(aid)*100;
+    if(ans>100){
+      return "100%";
+    }else{
+      return `${ans.toFixed(2)}%`;
+    }
+  }
 
   return (
     <>
@@ -248,6 +276,14 @@ export default function Home({socket}) {
               }}
             >
               <i className="fa-solid fa-calendar"></i>Events
+            </div>
+            <div
+              className="menu"
+              onClick={() => {
+                nav("/help-students");
+              }}
+            >
+              <i class="fa-solid fa-handshake-angle"></i>Help Students
             </div>
             <div
               className="menu"
@@ -314,9 +350,16 @@ export default function Home({socket}) {
                 {post.map((elem) => (
                   <div className="post">
                     <div className="post-header">
-                      <div className="post-profile" >
-                        <div onClick={() =>{
-                      elem.userid===userid?nav("/view-profile"):nav("/view-search-profile", { state: { id: elem.userid } })}}>
+                      <div className="post-profile">
+                        <div
+                          onClick={() => {
+                            elem.userid === userid
+                              ? nav("/view-profile")
+                              : nav("/view-search-profile", {
+                                  state: { id: elem.userid },
+                                });
+                          }}
+                        >
                           <img
                             src={
                               elem.profilepic === "" ||
@@ -390,11 +433,9 @@ export default function Home({socket}) {
           </div>
         </div>
 
-        <div className="home-events-main">
+        <div className="home-right-main">
           <div className="event-box">
             <span>Upcoming Events</span>
-            <div className="div-line"></div>
-            <img src="images/Events-bro.png" alt="" />
             <div className="upcoming-events">
               {events.map((elem) => (
                 <div className="upcoming-event">
@@ -424,6 +465,26 @@ export default function Home({socket}) {
               ))}
             </div>
           </div>
+          {aids.length>0?
+        <div className="aid-box">
+        <h2>Aid Progress Bars</h2>
+        {aids.map((elem)=>
+          <div className="aid">
+          {elem.image!==""?
+          <img src={`${WEB_URL}${elem.image}`}/> :<img src="images/profile1.png"/> 
+        }
+          <div className="aid-info">
+          <div className="aid-info-div"><div className="name">{elem.name&&elem.name}</div><div>{calWidth(elem.aid,elem.claimed)}</div></div>
+          <div className="progress-bar">
+            <div className="fill-progress-bar" style={{width:calWidth(elem.aid,elem.claimed)}}></div>
+          </div>
+          <div className="amount"><span>₹0</span><span>₹{elem.aid}</span></div>
+          </div>
+        </div>
+        )}
+        
+      </div>:null  
+        }
         </div>
       </div>
     </>

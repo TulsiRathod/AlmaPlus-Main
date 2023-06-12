@@ -61,17 +61,23 @@ export default function Notidfication() {
     }
   };
 
+  const Logout = () => {
+    localStorage.clear();
+    nav("/");
+  };
+
   useEffect(() => {
     getUser();
     getNotifications();
   }, []);
+  
   return (
     <>
       <div class="home-container">
         <div className="profile-card-main">
           <div className="profile-card">
             <div className="profile-card-imgbox">
-              {user.profilepic ? (
+              {user.profilepic !== "" ? (
                 <img
                   src={`${WEB_URL}${user.profilepic}`}
                   alt=""
@@ -102,22 +108,34 @@ export default function Notidfication() {
           </div>
 
           <div className="menu-container">
-            <Link to="/events">
-              <div className="menu">
-                <i className="fa-solid fa-calendar"></i>Events
-              </div>
-            </Link>
-            <Link to="/feedback">
-              <div className="menu">
-                <i className="fa-solid fa-star"></i>FeedBack & Rating
-              </div>
-            </Link>
+            <div
+              className="menu"
+              onClick={() => {
+                nav("/events");
+              }}
+            >
+              <i className="fa-solid fa-calendar"></i>Events
+            </div>
+            <div
+              className="menu"
+              onClick={() => {
+                nav("/help-students");
+              }}
+            >
+              <i class="fa-solid fa-handshake-angle"></i>Help Students
+            </div>
+            <div
+              className="menu"
+              onClick={() => {
+                nav("/feedback");
+              }}
+            >
+              <i className="fa-solid fa-star"></i>FeedBack & Rating
+            </div>
             <hr className="hr-line" />
-            <Link to="/">
-              <div className="menu">
-                <i className="fa-solid fa-right-from-bracket"></i>Logout
-              </div>
-            </Link>
+            <div className="menu" onClick={Logout}>
+              <i className="fa-solid fa-right-from-bracket"></i>Logout
+            </div>
           </div>
         </div>
 

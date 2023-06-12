@@ -6,8 +6,10 @@ import EditProfileModal from "./EditProfileModal";
 import EditExperienceModal from "./EditExperienceModal";
 import EditEducationModal from "./EditEducationModal";
 import ChangePasswordModal from "./ChangePasswordModal";
+import { useNavigate } from "react-router-dom";
 
 export default function ViewProfile() {
+  const nav = useNavigate();
   const [user, setUser] = useState({});
   const [language, setLanguage] = useState([]);
   const [skills, setSkills] = useState([]);
@@ -18,6 +20,7 @@ export default function ViewProfile() {
   const [showModal3, setShowModal3] = useState(false);
   const [showModal4, setShowModal4] = useState(false);
   const [experience, setExperience] = useState([]);
+  const [topUsers, setTopUsers] = useState([]);
   const closeModal1 = () => setShowModal1(false);
   const closeModal2 = () => setShowModal2(false);
   const closeModal3 = () => setShowModal3(false);
@@ -25,16 +28,18 @@ export default function ViewProfile() {
   const [modal, setModal] = useState("");
   const [editmenu, setEditMenu] = useState(false);
   const userID = localStorage.getItem("AlmaPlus_Id");
-  
+
   const getUser = () => {
     axios({
       method: "get",
       url: `${WEB_URL}/api/searchUserById/${userID}`,
     })
       .then((Response) => {
-        setLanguage(JSON.parse(Response.data.data[0].languages));
+        Response.data.data[0].languages &&
+          setLanguage(JSON.parse(Response.data.data[0].languages));
         setUser(Response.data.data[0]);
-        setSkills(JSON.parse(Response.data.data[0].skills));
+        Response.data.data[0].skills &&
+          setSkills(JSON.parse(Response.data.data[0].skills));
       })
       .catch((error) => {
         toast.error("Something Went Wrong");
@@ -73,9 +78,22 @@ export default function ViewProfile() {
       });
   };
 
+  const getNewUsers = () => {
+    axios({
+      url: `${WEB_URL}/api/getTopUsers`,
+      method: "post",
+      data: {
+        institute: user.institute,
+      },
+    }).then((Response) => {
+      console.log(Response.data.data.filter((elem) => elem._id !== user._id));
+      setTopUsers(Response.data.data.filter((elem) => elem._id !== user._id));
+    });
+  };
+
   const formatDate = (date) => {
-    if(date==""||date==null){
-      return 'Present';
+    if (date == "" || date == null) {
+      return "Present";
     }
     var year = date.split("-")[0];
     var month = date.split("-")[1];
@@ -114,6 +132,10 @@ export default function ViewProfile() {
     getExperience();
   }, []);
 
+  useEffect(() => {
+    getNewUsers();
+  }, [user]);
+
   return (
     <>
       <div className="container">
@@ -122,17 +144,22 @@ export default function ViewProfile() {
             <div className="profile-cover"></div>
             <div className="profile-container-inner1">
               <div>
-                <img
-                  src={`${WEB_URL}${user.profilepic}`}
-                  alt=""
-                  className="profile-pic"
-                />
+                {user.profilepic !== "" ? (
+                  <img
+                    src={`${WEB_URL}${user.profilepic}`}
+                    alt=""
+                    className="profile-pic"
+                  />
+                ) : (
+                  <img src="images/profile1.png" className="profile-pic" />
+                )}
                 <h1>
                   {user.fname} {user.lname}
                 </h1>
-                <p>{user.institute&&user.institute}</p>
+                <p>{user.institute && user.institute}</p>
                 <p>
-                  {user.city&&user.city} {user.state&&user.state} {user.nation ? `, ${user.nation} `:null}
+                  {user.city && user.city} {user.state && user.state}{" "}
+                  {user.nation ? `, ${user.nation} ` : null}
                   <a
                     onClick={() => {
                       setContactInfo(!contactInfo);
@@ -146,17 +173,17 @@ export default function ViewProfile() {
                   className="contactInfo"
                   style={{ display: `${contactInfo ? "block" : "none"}` }}
                 >
-                  {user.github !== "" ? (
+                  {user.github !== undefined ? (
                     <div>
                       <i class="fa-brands fa-github"></i> {user.github}
                     </div>
                   ) : null}
-                  {user.linkedin !== "" ? (
+                  {user.linkedin !== undefined ? (
                     <div>
                       <i class="fa-brands fa-linkedin-in"></i> {user.linkedin}
                     </div>
                   ) : null}
-                  {user.portfolioweb !== "" ? (
+                  {user.portfolioweb !== undefined ? (
                     <div>
                       <i class="fa-regular fa-id-card"></i> {user.portfolioweb}
                     </div>
@@ -192,12 +219,14 @@ export default function ViewProfile() {
                       Profile
                     </a>
                     <a
-                     onClick={() => {
-                      setModal("Add");
-                      setShowModal3(true);
-                      setEditMenu(!editmenu);
-                    }}
-                    >Education</a>
+                      onClick={() => {
+                        setModal("Add");
+                        setShowModal3(true);
+                        setEditMenu(!editmenu);
+                      }}
+                    >
+                      Education
+                    </a>
                     <a
                       onClick={() => {
                         setModal("Add");
@@ -208,11 +237,13 @@ export default function ViewProfile() {
                       Experience
                     </a>
                     <a
-                      onClick={()=>{
+                      onClick={() => {
                         setShowModal4(true);
                         setEditMenu(!editmenu);
                       }}
-                    >Change Password</a>
+                    >
+                      Change Password
+                    </a>
                   </div>
                 </div>
               </div>
@@ -263,7 +294,13 @@ export default function ViewProfile() {
                     <b>
                       {formatDate(elem.joindate)} - {formatDate(elem.enddate)}
                     </b>
-                   {elem.description !==""? <p><strong>Description :</strong> {elem.description}</p>:""}
+                    {elem.description !== "" ? (
+                      <p>
+                        <strong>Description :</strong> {elem.description}
+                      </p>
+                    ) : (
+                      ""
+                    )}
                     <hr />
                   </div>
                 </div>
@@ -335,39 +372,36 @@ export default function ViewProfile() {
           ) : null}
         </div>
         <div className="profile-sidebar">
-          <div className="sidebar-people">
-            <h3>People you may know</h3>
-
-            <div className="sidebar-people-row">
-              <img src="images/user2.jpg" alt="" />
-              <div>
-                <h2>Aryan Patel</h2>
-                <p>Head of Marketing at Alibaba</p>
-                <a href="#">Connect</a>
-              </div>
+          {topUsers.length > 0 ? (
+            <div className="sidebar-people">
+              <h3>People you may know</h3>
+              {topUsers.map((elem) => (
+                <>
+                  <div className="sidebar-people-row">
+                    <img src={`${WEB_URL}${elem.profilepic}`} alt="" />
+                    <div>
+                      <h2>
+                        {elem.fname} {elem.lname}
+                      </h2>
+                      <p>
+                        {elem.city} {elem.state}, {elem.nation}{" "}
+                      </p>
+                      <a
+                        onClick={() =>
+                          nav("/view-search-profile", {
+                            state: { id: elem._id },
+                          })
+                        }
+                      >
+                        View Profile
+                      </a>
+                    </div>
+                  </div>
+                  <hr />
+                </>
+              ))}
             </div>
-            <hr />
-
-            <div className="sidebar-people-row">
-              <img src="images/user3.png" alt="" />
-              <div>
-                <h2>Drashti Dankhara</h2>
-                <p>Web Developer at Microsoft</p>
-                <a href="#">Connect</a>
-              </div>
-            </div>
-            <hr />
-
-            <div className="sidebar-people-row">
-              <img src="images/user1.png" alt="" />
-              <div>
-                <h2>Mansi Patel</h2>
-                <p>Designer at Amazon</p>
-                <a href="#">Connect</a>
-              </div>
-            </div>
-            <hr />
-          </div>
+          ) : null}
         </div>
       </div>
       {showModal1 && (
@@ -393,11 +427,7 @@ export default function ViewProfile() {
           modal={modal}
         />
       )}
-      {showModal4 && (
-        <ChangePasswordModal
-          closeModal={closeModal4}
-        />
-      )}
+      {showModal4 && <ChangePasswordModal closeModal={closeModal4} />}
     </>
   );
 }

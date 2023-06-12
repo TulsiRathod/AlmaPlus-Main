@@ -15,6 +15,7 @@ import NewPassword from "./components/NewPassword";
 import ViewSearchProfile from "./components/ViewSearchProfile";
 import { io } from "socket.io-client";
 import Navbar from "./components/Navbar";
+import HelpStudents from "./components/HelpStudents";
 
 function App() {
   const socket = io("ws://localhost:8900");
@@ -36,6 +37,7 @@ function App() {
         <Route exact path="/notification" element={<Notidfication />} />
         <Route exact path="/forget-password" element={<ForgetPassword />} />
         <Route exact path="/new-password" element={<NewPassword />} />
+        <Route exact path="/help-students" element={<HelpStudents />} />
       </Routes>
     </>
   );
