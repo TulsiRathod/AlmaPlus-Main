@@ -7,6 +7,7 @@ import EditExperienceModal from "./EditExperienceModal";
 import EditEducationModal from "./EditEducationModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import { useNavigate } from "react-router-dom";
+import FollowerModal from "./FollowerModal";
 
 export default function ViewProfile() {
   const nav = useNavigate();
@@ -19,12 +20,14 @@ export default function ViewProfile() {
   const [showModal2, setShowModal2] = useState(false);
   const [showModal3, setShowModal3] = useState(false);
   const [showModal4, setShowModal4] = useState(false);
+  const [showModal5, setShowModal5] = useState(false);
   const [experience, setExperience] = useState([]);
   const [topUsers, setTopUsers] = useState([]);
   const closeModal1 = () => setShowModal1(false);
   const closeModal2 = () => setShowModal2(false);
   const closeModal3 = () => setShowModal3(false);
   const closeModal4 = () => setShowModal4(false);
+  const closeModal5 = () => setShowModal5(false);
   const [modal, setModal] = useState("");
   const [editmenu, setEditMenu] = useState(false);
   const userID = localStorage.getItem("AlmaPlus_Id");
@@ -217,6 +220,14 @@ export default function ViewProfile() {
                       }}
                     >
                       Profile
+                    </a>
+                    <a
+                      onClick={() => {
+                        setShowModal5(true);
+                        setEditMenu(!editmenu);
+                      }}
+                    >
+                      Connections
                     </a>
                     <a
                       onClick={() => {
@@ -428,6 +439,7 @@ export default function ViewProfile() {
         />
       )}
       {showModal4 && <ChangePasswordModal closeModal={closeModal4} />}
+      {showModal5 && <FollowerModal closeModal={closeModal5} user={user} getUser={getUser}/>}
     </>
   );
 }

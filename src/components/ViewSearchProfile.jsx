@@ -27,7 +27,6 @@ export default function ViewSearchProfile({ socket }) {
         url: `${WEB_URL}/api/searchUserById/${userID}`,
       })
         .then((Response) => {
-          // console.log(Response.data.data[0]);
           Response.data.data[0].languages&&setLanguage(JSON.parse(Response.data.data[0].languages));
           setUser(Response.data.data[0]);
           Response.data.data[0].skills&&setSkills(JSON.parse(Response.data.data[0].skills));
@@ -48,7 +47,6 @@ export default function ViewSearchProfile({ socket }) {
         },
       })
         .then((Response) => {
-          //   console.log(Response.data.data);
           setEducation(Response.data.data);
         })
         .catch((Error) => {

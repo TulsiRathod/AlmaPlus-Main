@@ -29,6 +29,7 @@ const HelpStudents = () => {
     })
       .then((Response) => {
         setAids(Response.data.data);
+        console.log(Response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -42,6 +43,18 @@ const HelpStudents = () => {
     } else {
       return `${ans.toFixed(2)}%`;
     }
+  };
+
+  const formatDate = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    return date.toLocaleDateString("en-US", options);
   };
 
   const Logout = () => {
@@ -119,7 +132,7 @@ const HelpStudents = () => {
       </div>
       <div className="aid-main">
         {aids.map((elem) => (
-          <div className="aid">
+          <div className="aid-div">
             {elem.image !== "" ? (
               <img src={`${WEB_URL}${elem.image}`} className="aid-img" />
             ) : (
@@ -131,7 +144,7 @@ const HelpStudents = () => {
                 <div><span><b>Claimed : </b>{elem.claimed}</span>({calWidth(elem.aid, elem.claimed)})</div>
               </div>
               <div className="aid-info-div">
-                <span><b>Description : </b>{elem.description}</span>
+                <span className="aid-info-desc"><b>Description : </b>{elem.description}</span><span><b>Due Date : </b>{formatDate(elem.dueDate)}</span>
               </div>
               <div className="progress-bar">
                 <div

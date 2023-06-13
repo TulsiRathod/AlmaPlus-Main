@@ -963,8 +963,8 @@ ul.prise-list-merge li.prise_list.selected {
 
 .aid{
   display: flex;
-  width: 100%;
-  padding: 10px 30px;
+  width: 90%;
+  padding: 10px;
   border-bottom: 2px solid #7e7f81;
 }
 
@@ -973,7 +973,24 @@ ul.prise-list-merge li.prise_list.selected {
   width: 50px;
   border-radius: 25px;
   object-fit: cover;
-  margin-right: 10px;
+  margin-right: 20px;
+}
+
+.aid-div{
+  display: flex;
+  width: 100%;
+  padding: 20px 30px;
+  margin: 5px 0;
+  background-color: #fff;
+  border-radius: 16px;
+}
+
+.aid-div img{
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  object-fit: cover;
+  margin-right: 20px;
 }
 
 .aid-info{
@@ -987,6 +1004,11 @@ ul.prise-list-merge li.prise_list.selected {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.aid-info-desc{
+  width: 60%;
+  margin:5px 10px 5px 0;
 }
 
 .aid-main{
@@ -2648,6 +2670,37 @@ ul li {
   cursor: pointer;
   padding: 10px 5px;
   margin: 10px 5px;
+}
+
+.follow{
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  cursor: pointer;
+}
+
+.follow .active{
+  color: #66bd9e;
+  border-bottom: 2px solid #66bd9e;
+}
+
+.connection-user{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.connection-user div{
+  display: flex;
+  align-items: center;
+}
+
+.connection-user img {
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  object-fit: cover;
 }
 
 /* Responsive Login */
