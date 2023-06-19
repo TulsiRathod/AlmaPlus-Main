@@ -73,16 +73,16 @@ const EditProfileModal = ({ closeModal, user, getUser }) => {
   useEffect(() => {
     setUserData(user);
     let arr=[];
-        JSON.parse(user.languages).map((elem)=>{
+    user.languages&& JSON.parse(user.languages).map((elem)=>{
           arr.push({value:elem,label:elem});
         })
     setLanguages(arr);
      arr=[];
-        JSON.parse(user.skills).map((elem)=>{
+     user.skills&&  JSON.parse(user.skills).map((elem)=>{
           arr.push({value:elem,label:elem});
         })
     setSkills(arr);
-    setDob(user.dob.split("T")[0]);
+    setDob(user.dob&&user.dob.split("T")[0]);
     document.body.style.overflowY = "hidden";
     return () => {
       document.body.style.overflowY = "scroll";
@@ -107,7 +107,7 @@ const EditProfileModal = ({ closeModal, user, getUser }) => {
       isValid = false;
       errors["gender_err"] = "Please Choose Gender";
     }
-    if (!input["dob"]) {
+    if (!dob) {
       isValid = false;
       errors["dob_err"] = "Please Choose Date of Birth";
     }
@@ -201,7 +201,7 @@ const EditProfileModal = ({ closeModal, user, getUser }) => {
             type="text"
             name="fname"
             placeholder="First Name"
-            value={userData.fname}
+            value={userData.fname&&userData.fname}
             onChange={handleChange}
           />
           <div className="text-danger">{errors.fname_err}</div>
@@ -210,7 +210,7 @@ const EditProfileModal = ({ closeModal, user, getUser }) => {
             type="text"
             name="lname"
             placeholder="Last Name"
-            value={userData.lname}
+            value={userData.lname&&userData.lname}
             onChange={handleChange}
           />
           <div className="text-danger">{errors.lname_err}</div>
@@ -320,7 +320,7 @@ const EditProfileModal = ({ closeModal, user, getUser }) => {
           <span>Nation</span>
           <input
             type="text"
-            name="Nation"
+            name="nation"
             placeholder="Nation"
             value={userData.nation}
             onChange={handleChange}

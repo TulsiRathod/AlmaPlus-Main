@@ -87,8 +87,6 @@ export default function Home({ socket }) {
     });
     body.append("fname", user.fname);
     body.append("lname", user.lname);
-    body.append("designation", user.designation);
-    body.append("uscompanyname", user.companyname);
     body.append("profilepic", user.profilepic);
     axios({
       url: `${WEB_URL}/api/addPost`,

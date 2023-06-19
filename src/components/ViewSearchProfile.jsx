@@ -19,6 +19,7 @@ export default function ViewSearchProfile({ socket }) {
   const myID = localStorage.getItem("AlmaPlus_Id");
   const [userID, setUserID] = useState("");
   const [topUsers, setTopUsers] = useState([]);
+  const [self, setSelf]=useState({});
 
   const getUser = () => {
     if (userID !== "") {
@@ -30,6 +31,21 @@ export default function ViewSearchProfile({ socket }) {
           Response.data.data[0].languages&&setLanguage(JSON.parse(Response.data.data[0].languages));
           setUser(Response.data.data[0]);
           Response.data.data[0].skills&&setSkills(JSON.parse(Response.data.data[0].skills));
+        })
+        .catch((error) => {
+          toast.error("Something Went Wrong");
+        });
+    }
+  };
+
+  const getSelf = () => {
+    if (userID !== "") {
+      axios({
+        method: "get",
+        url: `${WEB_URL}/api/searchUserById/${myID}`,
+      })
+        .then((Response) => {
+          setSelf(Response.data.data[0]);
         })
         .catch((error) => {
           toast.error("Something Went Wrong");
@@ -78,7 +94,7 @@ export default function ViewSearchProfile({ socket }) {
     socket.emit("sendNotification", {
       receiverid: userID,
       title: "New Follower",
-      msg: `${user.fname} ${user.lname} Started Following You`,
+      msg: `${self.fname} ${self.lname} Started Following You`,
     });
     axios({
       url: `${WEB_URL}/api/follow/${userID}`,
@@ -106,8 +122,8 @@ export default function ViewSearchProfile({ socket }) {
       method: "post",
       data: {
         userid: userID,
-        msg: `${user.fname} ${user.lname} Started Following You`,
-        image: user.profilepic,
+        msg: `${self.fname} ${self.lname} Started Following You`,
+        image: self.profilepic,
         title: "New Follwer",
         date: new Date(),
       },
@@ -219,6 +235,7 @@ export default function ViewSearchProfile({ socket }) {
   };
 
   useEffect(() => {
+    getSelf();
     getUser();
     getEducation();
     getExperience();
