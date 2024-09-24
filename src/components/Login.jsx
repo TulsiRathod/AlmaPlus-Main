@@ -32,30 +32,31 @@ export default function Login() {
   };
 
   const handleLogin =() => {
-    if (validate()) {
-      axios({
-        method: "post",
-        data: {
-          email: user.email,
-          password: user.password,
-        },
-        url: `${WEB_URL}/api/userLogin`
-      }).then((response) => {
-        toast.success("Login Successfull");
-        localStorage.setItem("AlmaPlus_Id", response.data.data._id);
-        setTimeout(() => {
-          nav("/home");
-        })
-      }).catch((err) => {
-        toast.error("Invalid Creadentials");
-      })
-    }
+    nav("/home");
+    // if (validate()) {
+    //   axios({
+    //     method: "post",
+    //     data: {
+    //       email: user.email,
+    //       password: user.password,
+    //     },
+    //     url: `${WEB_URL}/api/userLogin`
+    //   }).then((response) => {
+    //     toast.success("Login Successfull");
+    //     localStorage.setItem("AlmaPlus_Id", response.data.data._id);
+    //     setTimeout(() => {
+    //       nav("/home");
+    //     })
+    //   }).catch((err) => {
+    //     toast.error("Invalid Creadentials");
+    //   })
+    // }
   };
 
   useEffect(() => {
-    if (localStorage.getItem("AlmaPlus_Id") !== null) {
-      nav('/home');
-    }
+    // if (localStorage.getItem("AlmaPlus_Id") !== null) {
+    //   nav('/home');
+    // }
   })
 
   return (
